@@ -36,7 +36,7 @@ for (int i = 0; i < map.y_max; i++)
 displayMap(map);
 **/
 
-    printf("--------------------------------------------");
+    printf("--------------------------------------------\n");
 
     t_node n1 = createNode(7);
     p_tree t = createTree(&n1);
@@ -44,8 +44,30 @@ displayMap(map);
     addChild(&n1, &n2);
     t_node n5 = createNode(9);
     addChild(&n2, &n5);
-    printf("%d", t->root->value);
-    displayTree(t->root);
+    t_node n6 = createNode(10);
+    addChild(&n2, &n6);
+    t_node n3 = createNode(3);
+    addChild(&n1, &n3);
+    t_node n7 = createNode(10);
+    addChild(&n3, &n7);
+    t_node n8 = createNode(5);
+    addChild(&n3, &n8);
+    t_node n10 = createNode(7);
+    addChild(&n7, &n10);
+    t_node n11 = createNode(8);
+    addChild(&n7, &n11);
+    t_node n12 = createNode(0);
+    addChild(&n10, &n12);
+    t_node n4 = createNode(8);
+    addChild(&n1, &n4);
+    t_node n9 = createNode(0);
+    addChild(&n4, &n9);
+
+    displayTree(t->root, 0);
+
+    printf("\nLe chemin le plus court vers un '0' est : ");
+    printf("%d\n", findMinPath(t->root,0));
+
 
 
 

@@ -18,17 +18,20 @@ p_tree createTree(p_node root) {
     return newTree;
 }
 
-void displayTree(p_node node) {
+void displayTree(p_node node, int level) {
+    if (level > 0){
+        for (int k = 0; k < level; k++){
+            printf("    ");
+        }
+    }
     printf("%d\n", node->value);
 
     if (node->nbSons > 0) {
-        printf("    ");
         for (int i = 0; i < node->nbSons; i++) {
-
             if (i == node->nbSons - 1) {
-                displayTree(node->nodes[i]);
+                displayTree(node->nodes[i], level+1);
             } else {
-                displayTree(node->nodes[i]);
+                displayTree(node->nodes[i], level+1);
             }
         }
     }

@@ -28,6 +28,6 @@ void addChild(p_node parent, p_node child);
 
 int findMinPath(p_node node, int currentSum);
 
-void displayTree(p_node node);
+void displayTree(p_node node, int level);
 
 #endif //UNTITLED1_TREE_NODE_H
