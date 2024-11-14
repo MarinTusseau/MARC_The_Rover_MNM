@@ -2,6 +2,7 @@
 #include "map.h"
 
 int main() {
+    /**testMove();**/
     t_map map;
 
     // The following preprocessor directive checks if the code is being compiled on a Windows system.

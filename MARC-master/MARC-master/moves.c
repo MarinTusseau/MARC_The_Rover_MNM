@@ -153,3 +153,29 @@ void updateLocalisation(t_localisation *p_loc, t_move m)
     *p_loc = move(*p_loc, m);
     return;
 }
+
+#include <stdio.h>
+#include "loc.h"
+
+/**void testMove()
+{
+    t_localisation loc = loc_init(0, 0, NORTH);  // Position de départ : (0, 0), orientation NORTH
+    printf("Initial Position: (%d, %d), Orientation: %d\n", loc.pos.x, loc.pos.y, loc.ori);
+
+    // Appliquer un déplacement en avant (F_10)
+    loc = move(loc, F_10);
+    printf("After F_10: (%d, %d), Orientation: %d\n", loc.pos.x, loc.pos.y, loc.ori);
+
+    // Appliquer un déplacement en arrière (B_10)
+    loc = move(loc, B_10);
+    printf("After B_10: (%d, %d), Orientation: %d\n", loc.pos.x, loc.pos.y, loc.ori);
+
+    // Appliquer un virage à gauche (T_LEFT)
+    loc = move(loc, T_LEFT);
+    printf("After T_LEFT: (%d, %d), Orientation: %d\n", loc.pos.x, loc.pos.y, loc.ori);
+
+    // Appliquer un virage à droite (T_RIGHT)
+    loc = move(loc, T_RIGHT);
+    printf("After T_RIGHT: (%d, %d), Orientation: %d\n", loc.pos.x, loc.pos.y, loc.ori);
+}**/
+
