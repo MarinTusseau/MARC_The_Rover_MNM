@@ -82,12 +82,14 @@ void buildTreeFromMap(p_node currentNode, t_map map, int x, int y, int remaining
         return;
     }
 
+    //on crée le noeud (si la condition au dessus est respectée) du déplacement dans l'arbre
     t_node newNode = createNode(map.costs[x][y]);
     addChild(currentNode, &newNode);
 
     // EN IMAGINEANT QU'ON AI QUE 4 MOUVEMENTTS UP DOWN LEFT RIGHT
     int movements[4][2] = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
 
+    //on recrée des noeuds pour chaque deplacements en rappelant la fonction
     for (int i = 0; i < 4; i++) {
         int newX = x + movements[i][0];
         int newY = y + movements[i][1];
@@ -97,10 +99,13 @@ void buildTreeFromMap(p_node currentNode, t_map map, int x, int y, int remaining
 
 
 p_tree createTreeFromMap(t_map map, int startX, int startY, int maxMoves) {
+    //je pense qu'on peut utiliser les fonctions deja faites mais vsy flm
+    //on alloue dynamiquement et on créer ce qui va nous servir
     p_tree tree = malloc(sizeof(t_tree));
     tree->root = malloc(sizeof(t_node));
     *tree->root = createNode(map.costs[startY][startX]);
 
+    //on lance la fonction réccursive pour créer l'arbre avec la map
     buildTreeFromMap(tree->root, map, startY, startX, maxMoves);
     return tree;
 }
