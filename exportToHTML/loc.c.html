@@ -1,0 +1,75 @@
+<html>
+<head>
+<title>loc.c</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #7a7e85;}
+.s1 { color: #bcbec4;}
+.s2 { color: #b3ae60;}
+.s3 { color: #6aab73;}
+.s4 { color: #bcbec4;}
+.s5 { color: #cf8e6d;}
+.s6 { color: #2aacb8;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+loc.c</font>
+</center></td></tr></table>
+<pre><span class="s0">//</span>
+<span class="s0">// Created by flasque on 19/10/2024.</span>
+<span class="s0">//</span>
+
+<span class="s2">#include </span><span class="s3">&quot;loc.h&quot;</span>
+
+<span class="s1">t_localisation loc_init</span><span class="s4">(</span><span class="s5">int </span><span class="s1">x</span><span class="s4">, </span><span class="s5">int </span><span class="s1">y</span><span class="s4">, </span><span class="s1">t_orientation ori</span><span class="s4">)</span>
+<span class="s4">{</span>
+    <span class="s1">t_localisation loc</span><span class="s4">;</span>
+    <span class="s1">loc</span><span class="s4">.</span><span class="s1">pos</span><span class="s4">.</span><span class="s1">x </span><span class="s4">= </span><span class="s1">x</span><span class="s4">;</span>
+    <span class="s1">loc</span><span class="s4">.</span><span class="s1">pos</span><span class="s4">.</span><span class="s1">y </span><span class="s4">= </span><span class="s1">y</span><span class="s4">;</span>
+    <span class="s1">loc</span><span class="s4">.</span><span class="s1">ori </span><span class="s4">= </span><span class="s1">ori</span><span class="s4">;</span>
+    <span class="s5">return </span><span class="s1">loc</span><span class="s4">;</span>
+<span class="s4">}</span>
+
+<span class="s5">int </span><span class="s1">isValidLocalisation</span><span class="s4">(</span><span class="s1">t_position loc</span><span class="s4">, </span><span class="s5">int </span><span class="s1">x_max</span><span class="s4">, </span><span class="s5">int </span><span class="s1">y_max</span><span class="s4">)</span>
+<span class="s4">{</span>
+    <span class="s5">return </span><span class="s4">(</span><span class="s1">loc</span><span class="s4">.</span><span class="s1">x </span><span class="s4">&gt;= </span><span class="s6">0 </span><span class="s4">&amp;&amp; </span><span class="s1">loc</span><span class="s4">.</span><span class="s1">x </span><span class="s4">&lt; </span><span class="s1">x_max </span><span class="s4">&amp;&amp; </span><span class="s1">loc</span><span class="s4">.</span><span class="s1">y </span><span class="s4">&gt;= </span><span class="s6">0 </span><span class="s4">&amp;&amp; </span><span class="s1">loc</span><span class="s4">.</span><span class="s1">y </span><span class="s4">&lt; </span><span class="s1">y_max</span><span class="s4">);</span>
+<span class="s4">}</span>
+
+<span class="s1">t_position LEFT</span><span class="s4">(</span><span class="s1">t_position pos</span><span class="s4">)</span>
+<span class="s4">{</span>
+    <span class="s1">t_position new_pos</span><span class="s4">;</span>
+    <span class="s1">new_pos</span><span class="s4">.</span><span class="s1">x </span><span class="s4">= </span><span class="s1">pos</span><span class="s4">.</span><span class="s1">x </span><span class="s4">- </span><span class="s6">1</span><span class="s4">;</span>
+    <span class="s1">new_pos</span><span class="s4">.</span><span class="s1">y </span><span class="s4">= </span><span class="s1">pos</span><span class="s4">.</span><span class="s1">y</span><span class="s4">;</span>
+    <span class="s5">return </span><span class="s1">new_pos</span><span class="s4">;</span>
+<span class="s4">}</span>
+
+<span class="s1">t_position RIGHT</span><span class="s4">(</span><span class="s1">t_position pos</span><span class="s4">)</span>
+<span class="s4">{</span>
+    <span class="s1">t_position new_pos</span><span class="s4">;</span>
+    <span class="s1">new_pos</span><span class="s4">.</span><span class="s1">x </span><span class="s4">= </span><span class="s1">pos</span><span class="s4">.</span><span class="s1">x </span><span class="s4">+ </span><span class="s6">1</span><span class="s4">;</span>
+    <span class="s1">new_pos</span><span class="s4">.</span><span class="s1">y </span><span class="s4">= </span><span class="s1">pos</span><span class="s4">.</span><span class="s1">y</span><span class="s4">;</span>
+    <span class="s5">return </span><span class="s1">new_pos</span><span class="s4">;</span>
+<span class="s4">}</span>
+
+<span class="s1">t_position UP</span><span class="s4">(</span><span class="s1">t_position pos</span><span class="s4">)</span>
+<span class="s4">{</span>
+    <span class="s1">t_position new_pos</span><span class="s4">;</span>
+    <span class="s1">new_pos</span><span class="s4">.</span><span class="s1">x </span><span class="s4">= </span><span class="s1">pos</span><span class="s4">.</span><span class="s1">x</span><span class="s4">;</span>
+    <span class="s1">new_pos</span><span class="s4">.</span><span class="s1">y </span><span class="s4">= </span><span class="s1">pos</span><span class="s4">.</span><span class="s1">y </span><span class="s4">- </span><span class="s6">1</span><span class="s4">;</span>
+    <span class="s5">return </span><span class="s1">new_pos</span><span class="s4">;</span>
+<span class="s4">}</span>
+
+<span class="s1">t_position DOWN</span><span class="s4">(</span><span class="s1">t_position pos</span><span class="s4">)</span>
+<span class="s4">{</span>
+    <span class="s1">t_position new_pos</span><span class="s4">;</span>
+    <span class="s1">new_pos</span><span class="s4">.</span><span class="s1">x </span><span class="s4">= </span><span class="s1">pos</span><span class="s4">.</span><span class="s1">x</span><span class="s4">;</span>
+    <span class="s1">new_pos</span><span class="s4">.</span><span class="s1">y </span><span class="s4">= </span><span class="s1">pos</span><span class="s4">.</span><span class="s1">y </span><span class="s4">+ </span><span class="s6">1</span><span class="s4">;</span>
+    <span class="s5">return </span><span class="s1">new_pos</span><span class="s4">;</span>
+<span class="s4">}</span>
+
+</pre>
+</body>
+</html>

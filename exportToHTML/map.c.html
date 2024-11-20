@@ -1,0 +1,321 @@
+<html>
+<head>
+<title>map.c</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #b3ae60;}
+.s1 { color: #bcbec4;}
+.s2 { color: #6aab73;}
+.s3 { color: #7a7e85;}
+.s4 { color: #bcbec4;}
+.s5 { color: #cf8e6d;}
+.s6 { color: #2aacb8;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+map.c</font>
+</center></td></tr></table>
+<pre><span class="s0">#include </span><span class="s2">&lt;stdio.h&gt;</span>
+<span class="s0">#include </span><span class="s2">&lt;stdlib.h&gt;</span>
+<span class="s0">#include </span><span class="s2">&lt;string.h&gt;</span>
+<span class="s0">#include </span><span class="s2">&quot;map.h&quot;</span>
+<span class="s0">#include </span><span class="s2">&quot;loc.h&quot;</span>
+<span class="s0">#include </span><span class="s2">&quot;queue.h&quot;</span>
+
+<span class="s3">/* prototypes of local functions */</span>
+<span class="s3">/* local functions are used only in this file, as helper functions */</span>
+
+<span class="s3">/** 
+ * @brief :  function to get the position of the base station 
+ * @param map : the map 
+ * @return : the position of the base station 
+ */</span>
+<span class="s1">t_position getBaseStationPosition</span><span class="s4">(</span><span class="s1">t_map</span><span class="s4">);</span>
+
+<span class="s3">/** 
+ * @brief : function to calculate costs of the map  from the base station 
+ * @param map : the map 
+ * @return none 
+ */</span>
+<span class="s5">void </span><span class="s1">calculateCosts</span><span class="s4">(</span><span class="s1">t_map</span><span class="s4">);</span>
+
+<span class="s3">/** 
+ * @brief : function to remove 'false' crevasses costs from the costs array 
+ * @param map : the map 
+ * @return none 
+ */</span>
+<span class="s5">void </span><span class="s1">removeFalseCrevasses</span><span class="s4">(</span><span class="s1">t_map</span><span class="s4">);</span>
+
+<span class="s3">/* definition of local functions */</span>
+
+<span class="s1">t_position getBaseStationPosition</span><span class="s4">(</span><span class="s1">t_map map</span><span class="s4">)</span>
+<span class="s4">{</span>
+    <span class="s1">t_position pos</span><span class="s4">;</span>
+    <span class="s5">int </span><span class="s1">i </span><span class="s4">= </span><span class="s6">0</span><span class="s4">;</span>
+    <span class="s5">int </span><span class="s1">found </span><span class="s4">= </span><span class="s6">0</span><span class="s4">;</span>
+    <span class="s5">while </span><span class="s4">(</span><span class="s1">i </span><span class="s4">&lt; </span><span class="s1">map</span><span class="s4">.</span><span class="s1">y_max </span><span class="s4">&amp;&amp; !</span><span class="s1">found</span><span class="s4">)</span>
+    <span class="s4">{</span>
+        <span class="s5">int </span><span class="s1">j </span><span class="s4">= </span><span class="s6">0</span><span class="s4">;</span>
+        <span class="s5">while </span><span class="s4">(</span><span class="s1">j </span><span class="s4">&lt; </span><span class="s1">map</span><span class="s4">.</span><span class="s1">x_max </span><span class="s4">&amp;&amp; !</span><span class="s1">found</span><span class="s4">)</span>
+        <span class="s4">{</span>
+            <span class="s5">if </span><span class="s4">(</span><span class="s1">map</span><span class="s4">.</span><span class="s1">soils</span><span class="s4">[</span><span class="s1">i</span><span class="s4">][</span><span class="s1">j</span><span class="s4">] == </span><span class="s1">BASE_STATION</span><span class="s4">)</span>
+            <span class="s4">{</span>
+                <span class="s1">pos</span><span class="s4">.</span><span class="s1">x </span><span class="s4">= </span><span class="s1">j</span><span class="s4">;</span>
+                <span class="s1">pos</span><span class="s4">.</span><span class="s1">y </span><span class="s4">= </span><span class="s1">i</span><span class="s4">;</span>
+                <span class="s1">found </span><span class="s4">= </span><span class="s6">1</span><span class="s4">;</span>
+            <span class="s4">}</span>
+            <span class="s1">j</span><span class="s4">++;</span>
+        <span class="s4">}</span>
+        <span class="s1">i</span><span class="s4">++;</span>
+    <span class="s4">}</span>
+    <span class="s3">// if the base station is not found, we exit the program</span>
+    <span class="s5">if </span><span class="s4">(!</span><span class="s1">found</span><span class="s4">)</span>
+    <span class="s4">{</span>
+        <span class="s1">fprintf</span><span class="s4">(</span><span class="s1">stderr</span><span class="s4">, </span><span class="s2">&quot;Error: base station not found in the map</span><span class="s5">\n</span><span class="s2">&quot;</span><span class="s4">);</span>
+        <span class="s1">exit</span><span class="s4">(</span><span class="s6">1</span><span class="s4">);</span>
+    <span class="s4">}</span>
+    <span class="s5">return </span><span class="s1">pos</span><span class="s4">;</span>
+<span class="s4">}</span>
+
+<span class="s5">void </span><span class="s1">removeFalseCrevasses</span><span class="s4">(</span><span class="s1">t_map map</span><span class="s4">)</span>
+<span class="s4">{</span>
+    <span class="s3">// step 1 : find the minimal cost &gt; 10000 in the costs array where the soil is not a crevasse</span>
+    <span class="s5">int </span><span class="s1">over</span><span class="s4">=</span><span class="s6">0</span><span class="s4">;</span>
+    <span class="s5">int </span><span class="s1">imin</span><span class="s4">, </span><span class="s1">jmin</span><span class="s4">;</span>
+    <span class="s5">while </span><span class="s4">(!</span><span class="s1">over</span><span class="s4">)</span>
+    <span class="s4">{</span>
+        <span class="s5">int </span><span class="s1">min_cost </span><span class="s4">= </span><span class="s1">COST_UNDEF</span><span class="s4">;</span>
+        <span class="s1">imin </span><span class="s4">= </span><span class="s1">map</span><span class="s4">.</span><span class="s1">y_max</span><span class="s4">;</span>
+        <span class="s1">jmin </span><span class="s4">= </span><span class="s1">map</span><span class="s4">.</span><span class="s1">x_max</span><span class="s4">;</span>
+        <span class="s5">for </span><span class="s4">(</span><span class="s5">int </span><span class="s1">i</span><span class="s4">=</span><span class="s6">0</span><span class="s4">; </span><span class="s1">i</span><span class="s4">&lt;</span><span class="s1">map</span><span class="s4">.</span><span class="s1">y_max</span><span class="s4">; </span><span class="s1">i</span><span class="s4">++)</span>
+        <span class="s4">{</span>
+            <span class="s5">for </span><span class="s4">(</span><span class="s5">int </span><span class="s1">j</span><span class="s4">=</span><span class="s6">0</span><span class="s4">; </span><span class="s1">j</span><span class="s4">&lt;</span><span class="s1">map</span><span class="s4">.</span><span class="s1">x_max</span><span class="s4">; </span><span class="s1">j</span><span class="s4">++)</span>
+            <span class="s4">{</span>
+                <span class="s5">if </span><span class="s4">(</span><span class="s1">map</span><span class="s4">.</span><span class="s1">soils</span><span class="s4">[</span><span class="s1">i</span><span class="s4">][</span><span class="s1">j</span><span class="s4">] != </span><span class="s1">CREVASSE </span><span class="s4">&amp;&amp; </span><span class="s1">map</span><span class="s4">.</span><span class="s1">costs</span><span class="s4">[</span><span class="s1">i</span><span class="s4">][</span><span class="s1">j</span><span class="s4">] &gt; </span><span class="s6">10000 </span><span class="s4">&amp;&amp; </span><span class="s1">map</span><span class="s4">.</span><span class="s1">costs</span><span class="s4">[</span><span class="s1">i</span><span class="s4">][</span><span class="s1">j</span><span class="s4">] &lt; </span><span class="s1">min_cost</span><span class="s4">)</span>
+                <span class="s4">{</span>
+                    <span class="s1">min_cost </span><span class="s4">= </span><span class="s1">map</span><span class="s4">.</span><span class="s1">costs</span><span class="s4">[</span><span class="s1">i</span><span class="s4">][</span><span class="s1">j</span><span class="s4">];</span>
+                    <span class="s1">imin </span><span class="s4">= </span><span class="s1">i</span><span class="s4">;</span>
+                    <span class="s1">jmin </span><span class="s4">= </span><span class="s1">j</span><span class="s4">;</span>
+                <span class="s4">}</span>
+            <span class="s4">}</span>
+        <span class="s4">}</span>
+        <span class="s5">if </span><span class="s4">(</span><span class="s1">imin </span><span class="s4">&lt; </span><span class="s1">map</span><span class="s4">.</span><span class="s1">y_max </span><span class="s4">&amp;&amp; </span><span class="s1">jmin </span><span class="s4">&lt; </span><span class="s1">map</span><span class="s4">.</span><span class="s1">x_max</span><span class="s4">)</span>
+        <span class="s4">{</span>
+            <span class="s3">// step 2 : calculate the costs of the neighbours of the position</span>
+            <span class="s1">t_position pos</span><span class="s4">;</span>
+            <span class="s1">pos</span><span class="s4">.</span><span class="s1">x </span><span class="s4">= </span><span class="s1">jmin</span><span class="s4">;</span>
+            <span class="s1">pos</span><span class="s4">.</span><span class="s1">y </span><span class="s4">= </span><span class="s1">imin</span><span class="s4">;</span>
+            <span class="s1">t_position lp</span><span class="s4">, </span><span class="s1">rp</span><span class="s4">, </span><span class="s1">up</span><span class="s4">, </span><span class="s1">dp</span><span class="s4">;</span>
+            <span class="s1">lp </span><span class="s4">= </span><span class="s1">LEFT</span><span class="s4">(</span><span class="s1">pos</span><span class="s4">);</span>
+            <span class="s1">rp </span><span class="s4">= </span><span class="s1">RIGHT</span><span class="s4">(</span><span class="s1">pos</span><span class="s4">);</span>
+            <span class="s1">up </span><span class="s4">= </span><span class="s1">UP</span><span class="s4">(</span><span class="s1">pos</span><span class="s4">);</span>
+            <span class="s1">dp </span><span class="s4">= </span><span class="s1">DOWN</span><span class="s4">(</span><span class="s1">pos</span><span class="s4">);</span>
+            <span class="s5">int </span><span class="s1">min_neighbour </span><span class="s4">= </span><span class="s1">COST_UNDEF</span><span class="s4">;</span>
+            <span class="s5">if </span><span class="s4">(</span><span class="s1">isValidLocalisation</span><span class="s4">(</span><span class="s1">lp</span><span class="s4">, </span><span class="s1">map</span><span class="s4">.</span><span class="s1">x_max</span><span class="s4">, </span><span class="s1">map</span><span class="s4">.</span><span class="s1">y_max</span><span class="s4">))</span>
+            <span class="s4">{</span>
+                <span class="s1">min_neighbour </span><span class="s4">= (</span><span class="s1">map</span><span class="s4">.</span><span class="s1">costs</span><span class="s4">[</span><span class="s1">lp</span><span class="s4">.</span><span class="s1">y</span><span class="s4">][</span><span class="s1">lp</span><span class="s4">.</span><span class="s1">x</span><span class="s4">] &lt; </span><span class="s1">min_neighbour</span><span class="s4">) ? </span><span class="s1">map</span><span class="s4">.</span><span class="s1">costs</span><span class="s4">[</span><span class="s1">lp</span><span class="s4">.</span><span class="s1">y</span><span class="s4">][</span><span class="s1">lp</span><span class="s4">.</span><span class="s1">x</span><span class="s4">] : </span><span class="s1">min_neighbour</span><span class="s4">;</span>
+            <span class="s4">}</span>
+            <span class="s5">if </span><span class="s4">(</span><span class="s1">isValidLocalisation</span><span class="s4">(</span><span class="s1">rp</span><span class="s4">, </span><span class="s1">map</span><span class="s4">.</span><span class="s1">x_max</span><span class="s4">, </span><span class="s1">map</span><span class="s4">.</span><span class="s1">y_max</span><span class="s4">))</span>
+            <span class="s4">{</span>
+                <span class="s1">min_neighbour </span><span class="s4">= (</span><span class="s1">map</span><span class="s4">.</span><span class="s1">costs</span><span class="s4">[</span><span class="s1">rp</span><span class="s4">.</span><span class="s1">y</span><span class="s4">][</span><span class="s1">rp</span><span class="s4">.</span><span class="s1">x</span><span class="s4">] &lt; </span><span class="s1">min_neighbour</span><span class="s4">) ? </span><span class="s1">map</span><span class="s4">.</span><span class="s1">costs</span><span class="s4">[</span><span class="s1">rp</span><span class="s4">.</span><span class="s1">y</span><span class="s4">][</span><span class="s1">rp</span><span class="s4">.</span><span class="s1">x</span><span class="s4">] : </span><span class="s1">min_neighbour</span><span class="s4">;</span>
+            <span class="s4">}</span>
+            <span class="s5">if </span><span class="s4">(</span><span class="s1">isValidLocalisation</span><span class="s4">(</span><span class="s1">up</span><span class="s4">, </span><span class="s1">map</span><span class="s4">.</span><span class="s1">x_max</span><span class="s4">, </span><span class="s1">map</span><span class="s4">.</span><span class="s1">y_max</span><span class="s4">))</span>
+            <span class="s4">{</span>
+                <span class="s1">min_neighbour </span><span class="s4">= (</span><span class="s1">map</span><span class="s4">.</span><span class="s1">costs</span><span class="s4">[</span><span class="s1">up</span><span class="s4">.</span><span class="s1">y</span><span class="s4">][</span><span class="s1">up</span><span class="s4">.</span><span class="s1">x</span><span class="s4">] &lt; </span><span class="s1">min_neighbour</span><span class="s4">) ? </span><span class="s1">map</span><span class="s4">.</span><span class="s1">costs</span><span class="s4">[</span><span class="s1">up</span><span class="s4">.</span><span class="s1">y</span><span class="s4">][</span><span class="s1">up</span><span class="s4">.</span><span class="s1">x</span><span class="s4">] : </span><span class="s1">min_neighbour</span><span class="s4">;</span>
+            <span class="s4">}</span>
+            <span class="s5">if </span><span class="s4">(</span><span class="s1">isValidLocalisation</span><span class="s4">(</span><span class="s1">dp</span><span class="s4">, </span><span class="s1">map</span><span class="s4">.</span><span class="s1">x_max</span><span class="s4">, </span><span class="s1">map</span><span class="s4">.</span><span class="s1">y_max</span><span class="s4">))</span>
+            <span class="s4">{</span>
+                <span class="s1">min_neighbour </span><span class="s4">= (</span><span class="s1">map</span><span class="s4">.</span><span class="s1">costs</span><span class="s4">[</span><span class="s1">dp</span><span class="s4">.</span><span class="s1">y</span><span class="s4">][</span><span class="s1">dp</span><span class="s4">.</span><span class="s1">x</span><span class="s4">] &lt; </span><span class="s1">min_neighbour</span><span class="s4">) ? </span><span class="s1">map</span><span class="s4">.</span><span class="s1">costs</span><span class="s4">[</span><span class="s1">dp</span><span class="s4">.</span><span class="s1">y</span><span class="s4">][</span><span class="s1">dp</span><span class="s4">.</span><span class="s1">x</span><span class="s4">] : </span><span class="s1">min_neighbour</span><span class="s4">;</span>
+            <span class="s4">}</span>
+            <span class="s5">int </span><span class="s1">self_cost </span><span class="s4">= </span><span class="s1">_soil_cost</span><span class="s4">[</span><span class="s1">map</span><span class="s4">.</span><span class="s1">soils</span><span class="s4">[</span><span class="s1">imin</span><span class="s4">][</span><span class="s1">jmin</span><span class="s4">]];</span>
+            <span class="s1">map</span><span class="s4">.</span><span class="s1">costs</span><span class="s4">[</span><span class="s1">imin</span><span class="s4">][</span><span class="s1">jmin</span><span class="s4">] = (</span><span class="s1">min_neighbour </span><span class="s4">+ </span><span class="s1">self_cost </span><span class="s4">&lt; </span><span class="s1">map</span><span class="s4">.</span><span class="s1">costs</span><span class="s4">[</span><span class="s1">imin</span><span class="s4">][</span><span class="s1">jmin</span><span class="s4">]) ? </span><span class="s1">min_neighbour </span><span class="s4">+ </span><span class="s1">self_cost </span><span class="s4">: </span><span class="s1">map</span><span class="s4">.</span><span class="s1">costs</span><span class="s4">[</span><span class="s1">imin</span><span class="s4">][</span><span class="s1">jmin</span><span class="s4">];</span>
+        <span class="s4">}</span>
+        <span class="s5">else</span>
+        <span class="s4">{</span>
+            <span class="s1">over </span><span class="s4">= </span><span class="s6">1</span><span class="s4">;</span>
+        <span class="s4">}</span>
+    <span class="s4">}</span>
+<span class="s4">}</span>
+
+<span class="s5">void </span><span class="s1">calculateCosts</span><span class="s4">(</span><span class="s1">t_map map</span><span class="s4">)</span>
+<span class="s4">{</span>
+    <span class="s1">t_position baseStation </span><span class="s4">= </span><span class="s1">getBaseStationPosition</span><span class="s4">(</span><span class="s1">map</span><span class="s4">);</span>
+    <span class="s3">//create a queue to store the positions to visit</span>
+    <span class="s1">t_queue queue </span><span class="s4">= </span><span class="s1">createQueue</span><span class="s4">(</span><span class="s1">map</span><span class="s4">.</span><span class="s1">x_max </span><span class="s4">* </span><span class="s1">map</span><span class="s4">.</span><span class="s1">y_max</span><span class="s4">);</span>
+    <span class="s3">//enqueue the base station</span>
+    <span class="s1">enqueue</span><span class="s4">(&amp;</span><span class="s1">queue</span><span class="s4">, </span><span class="s1">baseStation</span><span class="s4">);</span>
+    <span class="s3">// while the queue is not empty</span>
+    <span class="s5">while </span><span class="s4">(</span><span class="s1">queue</span><span class="s4">.</span><span class="s1">first </span><span class="s4">!= </span><span class="s1">queue</span><span class="s4">.</span><span class="s1">last</span><span class="s4">)</span>
+    <span class="s4">{</span>
+        <span class="s3">// dequeue the position</span>
+        <span class="s1">t_position pos </span><span class="s4">= </span><span class="s1">dequeue</span><span class="s4">(&amp;</span><span class="s1">queue</span><span class="s4">);</span>
+        <span class="s3">// get its self cost</span>
+        <span class="s5">int </span><span class="s1">self_cost </span><span class="s4">= </span><span class="s1">_soil_cost</span><span class="s4">[</span><span class="s1">map</span><span class="s4">.</span><span class="s1">soils</span><span class="s4">[</span><span class="s1">pos</span><span class="s4">.</span><span class="s1">y</span><span class="s4">][</span><span class="s1">pos</span><span class="s4">.</span><span class="s1">x</span><span class="s4">]];</span>
+        <span class="s3">// get ts neighbours</span>
+        <span class="s1">t_position lp</span><span class="s4">, </span><span class="s1">rp</span><span class="s4">, </span><span class="s1">up</span><span class="s4">, </span><span class="s1">dp</span><span class="s4">;</span>
+        <span class="s1">lp </span><span class="s4">= </span><span class="s1">LEFT</span><span class="s4">(</span><span class="s1">pos</span><span class="s4">);</span>
+        <span class="s1">rp </span><span class="s4">= </span><span class="s1">RIGHT</span><span class="s4">(</span><span class="s1">pos</span><span class="s4">);</span>
+        <span class="s1">up </span><span class="s4">= </span><span class="s1">UP</span><span class="s4">(</span><span class="s1">pos</span><span class="s4">);</span>
+        <span class="s1">dp </span><span class="s4">= </span><span class="s1">DOWN</span><span class="s4">(</span><span class="s1">pos</span><span class="s4">);</span>
+        <span class="s3">// get the mimimum cost of the neighbours</span>
+        <span class="s5">int </span><span class="s1">min_cost </span><span class="s4">= </span><span class="s1">COST_UNDEF</span><span class="s4">;</span>
+        <span class="s5">if </span><span class="s4">(</span><span class="s1">isValidLocalisation</span><span class="s4">(</span><span class="s1">lp</span><span class="s4">, </span><span class="s1">map</span><span class="s4">.</span><span class="s1">x_max</span><span class="s4">, </span><span class="s1">map</span><span class="s4">.</span><span class="s1">y_max</span><span class="s4">))</span>
+        <span class="s4">{</span>
+            <span class="s1">min_cost </span><span class="s4">= (</span><span class="s1">map</span><span class="s4">.</span><span class="s1">costs</span><span class="s4">[</span><span class="s1">lp</span><span class="s4">.</span><span class="s1">y</span><span class="s4">][</span><span class="s1">lp</span><span class="s4">.</span><span class="s1">x</span><span class="s4">] &lt; </span><span class="s1">min_cost</span><span class="s4">) ? </span><span class="s1">map</span><span class="s4">.</span><span class="s1">costs</span><span class="s4">[</span><span class="s1">lp</span><span class="s4">.</span><span class="s1">y</span><span class="s4">][</span><span class="s1">lp</span><span class="s4">.</span><span class="s1">x</span><span class="s4">] : </span><span class="s1">min_cost</span><span class="s4">;</span>
+        <span class="s4">}</span>
+        <span class="s5">if </span><span class="s4">(</span><span class="s1">isValidLocalisation</span><span class="s4">(</span><span class="s1">rp</span><span class="s4">, </span><span class="s1">map</span><span class="s4">.</span><span class="s1">x_max</span><span class="s4">, </span><span class="s1">map</span><span class="s4">.</span><span class="s1">y_max</span><span class="s4">))</span>
+        <span class="s4">{</span>
+            <span class="s1">min_cost </span><span class="s4">= (</span><span class="s1">map</span><span class="s4">.</span><span class="s1">costs</span><span class="s4">[</span><span class="s1">rp</span><span class="s4">.</span><span class="s1">y</span><span class="s4">][</span><span class="s1">rp</span><span class="s4">.</span><span class="s1">x</span><span class="s4">] &lt; </span><span class="s1">min_cost</span><span class="s4">) ? </span><span class="s1">map</span><span class="s4">.</span><span class="s1">costs</span><span class="s4">[</span><span class="s1">rp</span><span class="s4">.</span><span class="s1">y</span><span class="s4">][</span><span class="s1">rp</span><span class="s4">.</span><span class="s1">x</span><span class="s4">] : </span><span class="s1">min_cost</span><span class="s4">;</span>
+        <span class="s4">}</span>
+        <span class="s5">if </span><span class="s4">(</span><span class="s1">isValidLocalisation</span><span class="s4">(</span><span class="s1">up</span><span class="s4">, </span><span class="s1">map</span><span class="s4">.</span><span class="s1">x_max</span><span class="s4">, </span><span class="s1">map</span><span class="s4">.</span><span class="s1">y_max</span><span class="s4">))</span>
+        <span class="s4">{</span>
+            <span class="s1">min_cost </span><span class="s4">= (</span><span class="s1">map</span><span class="s4">.</span><span class="s1">costs</span><span class="s4">[</span><span class="s1">up</span><span class="s4">.</span><span class="s1">y</span><span class="s4">][</span><span class="s1">up</span><span class="s4">.</span><span class="s1">x</span><span class="s4">] &lt; </span><span class="s1">min_cost</span><span class="s4">) ? </span><span class="s1">map</span><span class="s4">.</span><span class="s1">costs</span><span class="s4">[</span><span class="s1">up</span><span class="s4">.</span><span class="s1">y</span><span class="s4">][</span><span class="s1">up</span><span class="s4">.</span><span class="s1">x</span><span class="s4">] : </span><span class="s1">min_cost</span><span class="s4">;</span>
+        <span class="s4">}</span>
+        <span class="s5">if </span><span class="s4">(</span><span class="s1">isValidLocalisation</span><span class="s4">(</span><span class="s1">dp</span><span class="s4">, </span><span class="s1">map</span><span class="s4">.</span><span class="s1">x_max</span><span class="s4">, </span><span class="s1">map</span><span class="s4">.</span><span class="s1">y_max</span><span class="s4">))</span>
+        <span class="s4">{</span>
+            <span class="s1">min_cost </span><span class="s4">= (</span><span class="s1">map</span><span class="s4">.</span><span class="s1">costs</span><span class="s4">[</span><span class="s1">dp</span><span class="s4">.</span><span class="s1">y</span><span class="s4">][</span><span class="s1">dp</span><span class="s4">.</span><span class="s1">x</span><span class="s4">] &lt; </span><span class="s1">min_cost</span><span class="s4">) ? </span><span class="s1">map</span><span class="s4">.</span><span class="s1">costs</span><span class="s4">[</span><span class="s1">dp</span><span class="s4">.</span><span class="s1">y</span><span class="s4">][</span><span class="s1">dp</span><span class="s4">.</span><span class="s1">x</span><span class="s4">] : </span><span class="s1">min_cost</span><span class="s4">;</span>
+        <span class="s4">}</span>
+        <span class="s3">// the cost of the current position is the minimum cost of the neighbours + 1 or 0 if the soil is a base station</span>
+        <span class="s1">map</span><span class="s4">.</span><span class="s1">costs</span><span class="s4">[</span><span class="s1">pos</span><span class="s4">.</span><span class="s1">y</span><span class="s4">][</span><span class="s1">pos</span><span class="s4">.</span><span class="s1">x</span><span class="s4">] = (</span><span class="s1">map</span><span class="s4">.</span><span class="s1">soils</span><span class="s4">[</span><span class="s1">pos</span><span class="s4">.</span><span class="s1">y</span><span class="s4">][</span><span class="s1">pos</span><span class="s4">.</span><span class="s1">x</span><span class="s4">] == </span><span class="s1">BASE_STATION</span><span class="s4">) ? </span><span class="s6">0 </span><span class="s4">: </span><span class="s1">min_cost </span><span class="s4">+ </span><span class="s1">self_cost</span><span class="s4">;</span>
+        <span class="s3">// enqueue the neighbours if they are not visited yet</span>
+        <span class="s5">if </span><span class="s4">(</span><span class="s1">isValidLocalisation</span><span class="s4">(</span><span class="s1">lp</span><span class="s4">, </span><span class="s1">map</span><span class="s4">.</span><span class="s1">x_max</span><span class="s4">, </span><span class="s1">map</span><span class="s4">.</span><span class="s1">y_max</span><span class="s4">) &amp;&amp; </span><span class="s1">map</span><span class="s4">.</span><span class="s1">costs</span><span class="s4">[</span><span class="s1">lp</span><span class="s4">.</span><span class="s1">y</span><span class="s4">][</span><span class="s1">lp</span><span class="s4">.</span><span class="s1">x</span><span class="s4">] == </span><span class="s1">COST_UNDEF</span><span class="s4">)</span>
+        <span class="s4">{</span>
+            <span class="s3">// mark as visited - change the cost to 65534</span>
+            <span class="s1">map</span><span class="s4">.</span><span class="s1">costs</span><span class="s4">[</span><span class="s1">lp</span><span class="s4">.</span><span class="s1">y</span><span class="s4">][</span><span class="s1">lp</span><span class="s4">.</span><span class="s1">x</span><span class="s4">] = </span><span class="s1">COST_UNDEF</span><span class="s4">-</span><span class="s6">1</span><span class="s4">;</span>
+            <span class="s1">enqueue</span><span class="s4">(&amp;</span><span class="s1">queue</span><span class="s4">, </span><span class="s1">lp</span><span class="s4">);</span>
+        <span class="s4">}</span>
+        <span class="s5">if </span><span class="s4">(</span><span class="s1">isValidLocalisation</span><span class="s4">(</span><span class="s1">rp</span><span class="s4">, </span><span class="s1">map</span><span class="s4">.</span><span class="s1">x_max</span><span class="s4">, </span><span class="s1">map</span><span class="s4">.</span><span class="s1">y_max</span><span class="s4">) &amp;&amp; </span><span class="s1">map</span><span class="s4">.</span><span class="s1">costs</span><span class="s4">[</span><span class="s1">rp</span><span class="s4">.</span><span class="s1">y</span><span class="s4">][</span><span class="s1">rp</span><span class="s4">.</span><span class="s1">x</span><span class="s4">] == </span><span class="s1">COST_UNDEF</span><span class="s4">)</span>
+        <span class="s4">{</span>
+            <span class="s1">map</span><span class="s4">.</span><span class="s1">costs</span><span class="s4">[</span><span class="s1">rp</span><span class="s4">.</span><span class="s1">y</span><span class="s4">][</span><span class="s1">rp</span><span class="s4">.</span><span class="s1">x</span><span class="s4">] = </span><span class="s1">COST_UNDEF</span><span class="s4">-</span><span class="s6">1</span><span class="s4">;</span>
+            <span class="s1">enqueue</span><span class="s4">(&amp;</span><span class="s1">queue</span><span class="s4">, </span><span class="s1">rp</span><span class="s4">);</span>
+        <span class="s4">}</span>
+        <span class="s5">if </span><span class="s4">(</span><span class="s1">isValidLocalisation</span><span class="s4">(</span><span class="s1">up</span><span class="s4">, </span><span class="s1">map</span><span class="s4">.</span><span class="s1">x_max</span><span class="s4">, </span><span class="s1">map</span><span class="s4">.</span><span class="s1">y_max</span><span class="s4">) &amp;&amp; </span><span class="s1">map</span><span class="s4">.</span><span class="s1">costs</span><span class="s4">[</span><span class="s1">up</span><span class="s4">.</span><span class="s1">y</span><span class="s4">][</span><span class="s1">up</span><span class="s4">.</span><span class="s1">x</span><span class="s4">] == </span><span class="s1">COST_UNDEF</span><span class="s4">)</span>
+        <span class="s4">{</span>
+            <span class="s1">map</span><span class="s4">.</span><span class="s1">costs</span><span class="s4">[</span><span class="s1">up</span><span class="s4">.</span><span class="s1">y</span><span class="s4">][</span><span class="s1">up</span><span class="s4">.</span><span class="s1">x</span><span class="s4">] = </span><span class="s1">COST_UNDEF</span><span class="s4">-</span><span class="s6">1</span><span class="s4">;</span>
+            <span class="s1">enqueue</span><span class="s4">(&amp;</span><span class="s1">queue</span><span class="s4">, </span><span class="s1">up</span><span class="s4">);</span>
+        <span class="s4">}</span>
+        <span class="s5">if </span><span class="s4">(</span><span class="s1">isValidLocalisation</span><span class="s4">(</span><span class="s1">dp</span><span class="s4">, </span><span class="s1">map</span><span class="s4">.</span><span class="s1">x_max</span><span class="s4">, </span><span class="s1">map</span><span class="s4">.</span><span class="s1">y_max</span><span class="s4">) &amp;&amp; </span><span class="s1">map</span><span class="s4">.</span><span class="s1">costs</span><span class="s4">[</span><span class="s1">dp</span><span class="s4">.</span><span class="s1">y</span><span class="s4">][</span><span class="s1">dp</span><span class="s4">.</span><span class="s1">x</span><span class="s4">] == </span><span class="s1">COST_UNDEF</span><span class="s4">)</span>
+        <span class="s4">{</span>
+            <span class="s1">map</span><span class="s4">.</span><span class="s1">costs</span><span class="s4">[</span><span class="s1">dp</span><span class="s4">.</span><span class="s1">y</span><span class="s4">][</span><span class="s1">dp</span><span class="s4">.</span><span class="s1">x</span><span class="s4">] = </span><span class="s1">COST_UNDEF</span><span class="s4">-</span><span class="s6">1</span><span class="s4">;</span>
+            <span class="s1">enqueue</span><span class="s4">(&amp;</span><span class="s1">queue</span><span class="s4">, </span><span class="s1">dp</span><span class="s4">);</span>
+        <span class="s4">}</span>
+    <span class="s4">}</span>
+
+
+    <span class="s5">return</span><span class="s4">;</span>
+<span class="s4">}</span>
+<span class="s3">/* definition of exported functions */</span>
+
+<span class="s1">t_map createMapFromFile</span><span class="s4">(</span><span class="s5">char </span><span class="s4">*</span><span class="s1">filename</span><span class="s4">)</span>
+<span class="s4">{</span>
+    <span class="s3">/* rules for the file : 
+     * - the first line contains the number of lines : y dimension (int) 
+     * - the second line contains the number of columns : x dimension (int) 
+     * - the next lines contain the map values (int) separated by spaces : one line = one row 
+     * - the values are the following : 0 = BASE_STATION, 1 = PLAIN, 2 = ERG, 3 = REG, 4 = CREVASSE 
+     */</span>
+
+    <span class="s1">t_map map</span><span class="s4">;</span>
+    <span class="s5">int </span><span class="s1">xdim</span><span class="s4">, </span><span class="s1">ydim</span><span class="s4">;     </span><span class="s3">// dimensions of the map</span>
+    <span class="s5">char </span><span class="s1">buffer</span><span class="s4">[</span><span class="s6">100</span><span class="s4">];   </span><span class="s3">// buffer for reading the file line by line</span>
+
+    <span class="s1">FILE </span><span class="s4">*</span><span class="s1">file </span><span class="s4">= </span><span class="s1">fopen</span><span class="s4">(</span><span class="s1">filename</span><span class="s4">,</span><span class="s2">&quot;rt&quot;</span><span class="s4">);</span>
+    <span class="s5">if </span><span class="s4">(</span><span class="s1">file </span><span class="s4">== </span><span class="s1">NULL</span><span class="s4">)</span>
+    <span class="s4">{</span>
+        <span class="s1">fprintf</span><span class="s4">(</span><span class="s1">stderr</span><span class="s4">, </span><span class="s2">&quot;Error: cannot open file %s</span><span class="s5">\n</span><span class="s2">&quot;</span><span class="s4">, </span><span class="s1">filename</span><span class="s4">);</span>
+        <span class="s1">exit</span><span class="s4">(</span><span class="s6">1</span><span class="s4">);</span>
+    <span class="s4">}</span>
+    <span class="s1">fscanf</span><span class="s4">(</span><span class="s1">file</span><span class="s4">, </span><span class="s2">&quot;%d&quot;</span><span class="s4">, &amp;</span><span class="s1">ydim</span><span class="s4">);</span>
+    <span class="s1">fscanf</span><span class="s4">(</span><span class="s1">file</span><span class="s4">, </span><span class="s2">&quot;%d&quot;</span><span class="s4">, &amp;</span><span class="s1">xdim</span><span class="s4">);</span>
+    <span class="s1">map</span><span class="s4">.</span><span class="s1">x_max </span><span class="s4">= </span><span class="s1">xdim</span><span class="s4">;</span>
+    <span class="s1">map</span><span class="s4">.</span><span class="s1">y_max </span><span class="s4">= </span><span class="s1">ydim</span><span class="s4">;</span>
+    <span class="s1">map</span><span class="s4">.</span><span class="s1">soils </span><span class="s4">= (</span><span class="s1">t_soil </span><span class="s4">**)</span><span class="s1">malloc</span><span class="s4">(</span><span class="s1">ydim </span><span class="s4">* </span><span class="s5">sizeof</span><span class="s4">(</span><span class="s1">t_soil </span><span class="s4">*));</span>
+    <span class="s5">for </span><span class="s4">(</span><span class="s5">int </span><span class="s1">i </span><span class="s4">= </span><span class="s6">0</span><span class="s4">; </span><span class="s1">i </span><span class="s4">&lt; </span><span class="s1">ydim</span><span class="s4">; </span><span class="s1">i</span><span class="s4">++)</span>
+    <span class="s4">{</span>
+        <span class="s1">map</span><span class="s4">.</span><span class="s1">soils</span><span class="s4">[</span><span class="s1">i</span><span class="s4">] = (</span><span class="s1">t_soil </span><span class="s4">*)</span><span class="s1">malloc</span><span class="s4">(</span><span class="s1">xdim </span><span class="s4">* </span><span class="s5">sizeof</span><span class="s4">(</span><span class="s1">t_soil</span><span class="s4">));</span>
+    <span class="s4">}</span>
+    <span class="s1">map</span><span class="s4">.</span><span class="s1">costs </span><span class="s4">= (</span><span class="s5">int </span><span class="s4">**)</span><span class="s1">malloc</span><span class="s4">(</span><span class="s1">ydim </span><span class="s4">* </span><span class="s5">sizeof</span><span class="s4">(</span><span class="s5">int </span><span class="s4">*));</span>
+    <span class="s5">for </span><span class="s4">(</span><span class="s5">int </span><span class="s1">i </span><span class="s4">= </span><span class="s6">0</span><span class="s4">; </span><span class="s1">i </span><span class="s4">&lt; </span><span class="s1">ydim</span><span class="s4">; </span><span class="s1">i</span><span class="s4">++)</span>
+    <span class="s4">{</span>
+        <span class="s1">map</span><span class="s4">.</span><span class="s1">costs</span><span class="s4">[</span><span class="s1">i</span><span class="s4">] = (</span><span class="s5">int </span><span class="s4">*)</span><span class="s1">malloc</span><span class="s4">(</span><span class="s1">xdim </span><span class="s4">* </span><span class="s5">sizeof</span><span class="s4">(</span><span class="s5">int</span><span class="s4">));</span>
+    <span class="s4">}</span>
+    <span class="s5">for </span><span class="s4">(</span><span class="s5">int </span><span class="s1">i </span><span class="s4">= </span><span class="s6">0</span><span class="s4">; </span><span class="s1">i </span><span class="s4">&lt; </span><span class="s1">ydim</span><span class="s4">; </span><span class="s1">i</span><span class="s4">++)</span>
+    <span class="s4">{</span>
+
+        <span class="s3">// parse the line to get the values : 0 = BASE_STATION, 1 = PLAIN, 2 = ERG, 3 = REG, 4 = CREVASSE</span>
+        <span class="s3">// values are separated by spaces, so we use sscanf with %d to get the values</span>
+        <span class="s5">for </span><span class="s4">(</span><span class="s5">int </span><span class="s1">j </span><span class="s4">= </span><span class="s6">0</span><span class="s4">; </span><span class="s1">j </span><span class="s4">&lt; </span><span class="s1">xdim</span><span class="s4">; </span><span class="s1">j</span><span class="s4">++)</span>
+        <span class="s4">{</span>
+            <span class="s5">int </span><span class="s1">value</span><span class="s4">;</span>
+            <span class="s1">fscanf</span><span class="s4">(</span><span class="s1">file</span><span class="s4">, </span><span class="s2">&quot;%d&quot;</span><span class="s4">, &amp;</span><span class="s1">value</span><span class="s4">);</span>
+            <span class="s1">map</span><span class="s4">.</span><span class="s1">soils</span><span class="s4">[</span><span class="s1">i</span><span class="s4">][</span><span class="s1">j</span><span class="s4">] = </span><span class="s1">value</span><span class="s4">;</span>
+            <span class="s3">// cost is 0 for BASE_STATION, 65535 for other soils</span>
+            <span class="s1">map</span><span class="s4">.</span><span class="s1">costs</span><span class="s4">[</span><span class="s1">i</span><span class="s4">][</span><span class="s1">j</span><span class="s4">] = (</span><span class="s1">value </span><span class="s4">== </span><span class="s1">BASE_STATION</span><span class="s4">) ? </span><span class="s6">0 </span><span class="s4">: </span><span class="s1">COST_UNDEF</span><span class="s4">;</span>
+        <span class="s4">}</span>
+
+    <span class="s4">}</span>
+    <span class="s1">fclose</span><span class="s4">(</span><span class="s1">file</span><span class="s4">);</span>
+    <span class="s1">calculateCosts</span><span class="s4">(</span><span class="s1">map</span><span class="s4">);</span>
+    <span class="s1">removeFalseCrevasses</span><span class="s4">(</span><span class="s1">map</span><span class="s4">);</span>
+    <span class="s5">return </span><span class="s1">map</span><span class="s4">;</span>
+<span class="s4">}</span>
+
+<span class="s1">t_map createTrainingMap</span><span class="s4">()</span>
+<span class="s4">{</span>
+    <span class="s5">return </span><span class="s1">createMapFromFile</span><span class="s4">(</span><span class="s2">&quot;..</span><span class="s5">\\</span><span class="s2">maps</span><span class="s5">\\</span><span class="s2">training.map&quot;</span><span class="s4">);</span>
+<span class="s4">}</span>
+
+<span class="s5">void </span><span class="s1">displayMap</span><span class="s4">(</span><span class="s1">t_map map</span><span class="s4">)</span>
+<span class="s4">{</span>
+    <span class="s3">/** the rules for display are : 
+     * display all soils with 3x3 characters 
+     * characters are : B for base station, '-' for plain, '~' for erg, '^' for reg, ' ' for crevasse 
+     */</span>
+    <span class="s5">for </span><span class="s4">(</span><span class="s5">int </span><span class="s1">i </span><span class="s4">= </span><span class="s6">0</span><span class="s4">; </span><span class="s1">i </span><span class="s4">&lt; </span><span class="s1">map</span><span class="s4">.</span><span class="s1">y_max</span><span class="s4">; </span><span class="s1">i</span><span class="s4">++)</span>
+    <span class="s4">{</span>
+        <span class="s5">for </span><span class="s4">(</span><span class="s5">int </span><span class="s1">rep </span><span class="s4">= </span><span class="s6">0</span><span class="s4">; </span><span class="s1">rep </span><span class="s4">&lt; </span><span class="s6">3</span><span class="s4">; </span><span class="s1">rep</span><span class="s4">++)</span>
+        <span class="s4">{</span>
+            <span class="s5">for </span><span class="s4">(</span><span class="s5">int </span><span class="s1">j </span><span class="s4">= </span><span class="s6">0</span><span class="s4">; </span><span class="s1">j </span><span class="s4">&lt; </span><span class="s1">map</span><span class="s4">.</span><span class="s1">x_max</span><span class="s4">; </span><span class="s1">j</span><span class="s4">++)</span>
+            <span class="s4">{</span>
+                <span class="s5">char </span><span class="s1">c</span><span class="s4">[</span><span class="s6">4</span><span class="s4">];</span>
+                <span class="s5">switch </span><span class="s4">(</span><span class="s1">map</span><span class="s4">.</span><span class="s1">soils</span><span class="s4">[</span><span class="s1">i</span><span class="s4">][</span><span class="s1">j</span><span class="s4">])</span>
+                <span class="s4">{</span>
+                    <span class="s5">case </span><span class="s1">BASE_STATION</span><span class="s4">:</span>
+                        <span class="s5">if </span><span class="s4">(</span><span class="s1">rep</span><span class="s4">==</span><span class="s6">1</span><span class="s4">)</span>
+                        <span class="s4">{</span>
+                            <span class="s1">strcpy</span><span class="s4">(</span><span class="s1">c</span><span class="s4">, </span><span class="s2">&quot; B &quot;</span><span class="s4">);</span>
+                        <span class="s4">}</span>
+                        <span class="s5">else</span>
+                        <span class="s4">{</span>
+                            <span class="s1">strcpy</span><span class="s4">(</span><span class="s1">c</span><span class="s4">, </span><span class="s2">&quot;   &quot;</span><span class="s4">);</span>
+                        <span class="s4">}</span>
+                        <span class="s5">break</span><span class="s4">;</span>
+                    <span class="s5">case </span><span class="s1">PLAIN</span><span class="s4">:</span>
+                        <span class="s1">strcpy</span><span class="s4">(</span><span class="s1">c</span><span class="s4">, </span><span class="s2">&quot;---&quot;</span><span class="s4">);</span>
+                        <span class="s5">break</span><span class="s4">;</span>
+                    <span class="s5">case </span><span class="s1">ERG</span><span class="s4">:</span>
+                        <span class="s1">strcpy</span><span class="s4">(</span><span class="s1">c</span><span class="s4">, </span><span class="s2">&quot;~~~&quot;</span><span class="s4">);</span>
+                        <span class="s5">break</span><span class="s4">;</span>
+                    <span class="s5">case </span><span class="s1">REG</span><span class="s4">:</span>
+                        <span class="s1">strcpy</span><span class="s4">(</span><span class="s1">c</span><span class="s4">, </span><span class="s2">&quot;^^^&quot;</span><span class="s4">);</span>
+                        <span class="s5">break</span><span class="s4">;</span>
+                    <span class="s5">case </span><span class="s1">CREVASSE</span><span class="s4">:</span>
+                        <span class="s1">sprintf</span><span class="s4">(</span><span class="s1">c</span><span class="s4">, </span><span class="s2">&quot;%c%c%c&quot;</span><span class="s4">,</span><span class="s6">219</span><span class="s4">,</span><span class="s6">219</span><span class="s4">,</span><span class="s6">219</span><span class="s4">);</span>
+                        <span class="s5">break</span><span class="s4">;</span>
+                    <span class="s5">default</span><span class="s4">:</span>
+                        <span class="s1">strcpy</span><span class="s4">(</span><span class="s1">c</span><span class="s4">, </span><span class="s2">&quot;???&quot;</span><span class="s4">);</span>
+                        <span class="s5">break</span><span class="s4">;</span>
+                <span class="s4">}</span>
+                <span class="s1">printf</span><span class="s4">(</span><span class="s2">&quot;%s&quot;</span><span class="s4">, </span><span class="s1">c</span><span class="s4">);</span>
+            <span class="s4">}</span>
+            <span class="s1">printf</span><span class="s4">(</span><span class="s2">&quot;</span><span class="s5">\n</span><span class="s2">&quot;</span><span class="s4">);</span>
+        <span class="s4">}</span>
+
+    <span class="s4">}</span>
+    <span class="s5">return</span><span class="s4">;</span>
+<span class="s4">}</span></pre>
+</body>
+</html>

@@ -1,0 +1,59 @@
+<html>
+<head>
+<title>queue.h</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #b3ae60;}
+.s1 { color: #bcbec4;}
+.s2 { color: #6aab73;}
+.s3 { color: #7a7e85;}
+.s4 { color: #cf8e6d;}
+.s5 { color: #bcbec4;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+queue.h</font>
+</center></td></tr></table>
+<pre><span class="s0">#ifndef </span><span class="s1">UNTITLED1_QUEUE_H</span>
+<span class="s0">#define </span><span class="s1">UNTITLED1_QUEUE_H</span>
+<span class="s0">#include </span><span class="s2">&quot;loc.h&quot;</span>
+<span class="s3">/** 
+ * @brief Structure for the queue of integers 
+ */</span>
+<span class="s4">typedef struct </span><span class="s1">s_queue</span>
+<span class="s5">{</span>
+    <span class="s1">t_position </span><span class="s5">*</span><span class="s1">values</span><span class="s5">;</span>
+    <span class="s4">int </span><span class="s1">size</span><span class="s5">;</span>
+    <span class="s4">int </span><span class="s1">last</span><span class="s5">;</span>
+    <span class="s4">int </span><span class="s1">first</span><span class="s5">;</span>
+<span class="s5">} </span><span class="s1">t_queue</span><span class="s5">;</span>
+
+<span class="s3">/** 
+ * @brief Function to create a queue 
+ * @param size : the size of the queue 
+ * @return the queue 
+ */</span>
+<span class="s1">t_queue createQueue</span><span class="s5">(</span><span class="s4">int</span><span class="s5">);</span>
+
+<span class="s3">/** 
+ * @brief Function to enqueue a value in the queue 
+ * @param p_queue : pointer to the queue 
+ * @param value : the position to enqueue 
+ * @return none 
+ */</span>
+<span class="s4">void </span><span class="s1">enqueue</span><span class="s5">(</span><span class="s1">t_queue </span><span class="s5">*,</span><span class="s1">t_position</span><span class="s5">);</span>
+
+<span class="s3">/** 
+ * @brief Function to dequeue a value from the queue 
+ * @param p_queue : pointer to the queue 
+ * @return the value dequeued 
+ */</span>
+<span class="s1">t_position dequeue</span><span class="s5">(</span><span class="s1">t_queue </span><span class="s5">*);</span>
+
+<span class="s0">#endif </span><span class="s3">//UNTITLED1_QUEUE_H</span>
+</pre>
+</body>
+</html>

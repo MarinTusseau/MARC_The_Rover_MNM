@@ -1,0 +1,76 @@
+<html>
+<head>
+<title>map.h</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #b3ae60;}
+.s1 { color: #bcbec4;}
+.s2 { color: #2aacb8;}
+.s3 { color: #7a7e85;}
+.s4 { color: #cf8e6d;}
+.s5 { color: #bcbec4;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+map.h</font>
+</center></td></tr></table>
+<pre><span class="s0">#ifndef </span><span class="s1">UNTITLED1_MAP_H</span>
+<span class="s0">#define </span><span class="s1">UNTITLED1_MAP_H</span>
+
+<span class="s0">#define </span><span class="s1">COST_UNDEF </span><span class="s2">65535</span>
+<span class="s3">/** 
+ * @brief Enum for the possible soils of the map 
+ */</span>
+<span class="s4">typedef enum </span><span class="s1">e_soil</span>
+<span class="s5">{</span>
+    <span class="s1">BASE_STATION</span><span class="s5">,</span>
+    <span class="s1">PLAIN</span><span class="s5">,</span>
+    <span class="s1">ERG</span><span class="s5">,</span>
+    <span class="s1">REG</span><span class="s5">,</span>
+    <span class="s1">CREVASSE</span>
+<span class="s5">} </span><span class="s1">t_soil</span><span class="s5">;</span>
+
+<span class="s3">/** 
+ * @brief Array of costs for the soils 
+ */</span>
+<span class="s4">static const int </span><span class="s1">_soil_cost</span><span class="s5">[</span><span class="s2">5</span><span class="s5">] = {</span><span class="s2">0</span><span class="s5">, </span><span class="s2">1</span><span class="s5">, </span><span class="s2">2</span><span class="s5">, </span><span class="s2">4</span><span class="s5">, </span><span class="s2">10000</span><span class="s5">};</span>
+
+<span class="s3">/** 
+ * @brief Structure for the map 
+ 
+ */</span>
+<span class="s4">typedef struct </span><span class="s1">s_map</span>
+<span class="s5">{</span>
+    <span class="s1">t_soil  </span><span class="s5">**</span><span class="s1">soils</span><span class="s5">;</span>
+    <span class="s4">int     </span><span class="s5">**</span><span class="s1">costs</span><span class="s5">;</span>
+    <span class="s4">int     </span><span class="s1">x_max</span><span class="s5">;</span>
+    <span class="s4">int     </span><span class="s1">y_max</span><span class="s5">;</span>
+<span class="s5">} </span><span class="s1">t_map</span><span class="s5">;</span>
+
+<span class="s3">/** 
+ * @brief Function to initialise the map from a file 
+ * @param filename : the name of the file 
+ * @return the map 
+ */</span>
+<span class="s1">t_map createMapFromFile</span><span class="s5">(</span><span class="s4">char </span><span class="s5">*);</span>
+
+<span class="s3">/** 
+ * @brief Function to create a standard training map (11x11 with only plains and base station in the middle) 
+ * @param none 
+ * @return a standard map 
+ */</span>
+ <span class="s1">t_map createTrainingMap</span><span class="s5">();</span>
+
+<span class="s3">/** 
+ * @brief display the map with characters 
+ * @param map : the map to display 
+ */</span>
+<span class="s4">void </span><span class="s1">displayMap</span><span class="s5">(</span><span class="s1">t_map</span><span class="s5">);</span>
+
+<span class="s0">#endif </span><span class="s3">//UNTITLED1_MAP_H</span>
+</pre>
+</body>
+</html>

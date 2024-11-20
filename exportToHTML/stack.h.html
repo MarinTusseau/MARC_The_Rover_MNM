@@ -1,0 +1,65 @@
+<html>
+<head>
+<title>stack.h</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #b3ae60;}
+.s1 { color: #bcbec4;}
+.s2 { color: #7a7e85;}
+.s3 { color: #cf8e6d;}
+.s4 { color: #bcbec4;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+stack.h</font>
+</center></td></tr></table>
+<pre><span class="s0">#ifndef </span><span class="s1">UNTITLED1_STACK_H</span>
+<span class="s0">#define </span><span class="s1">UNTITLED1_STACK_H</span>
+
+<span class="s2">/** 
+ * @brief Structure for the stack of integers 
+ */</span>
+<span class="s3">typedef struct </span><span class="s1">s_stack</span>
+<span class="s4">{</span>
+    <span class="s3">int </span><span class="s4">*</span><span class="s1">values</span><span class="s4">;</span>
+    <span class="s3">int </span><span class="s1">size</span><span class="s4">;</span>
+    <span class="s3">int </span><span class="s1">nbElts</span><span class="s4">;</span>
+<span class="s4">} </span><span class="s1">t_stack</span><span class="s4">;</span>
+
+<span class="s2">/** 
+ * @brief Function to create a stack 
+ * @param size : the size of the stack 
+ * @return the stack 
+ */</span>
+<span class="s1">t_stack createStack</span><span class="s4">(</span><span class="s3">int</span><span class="s4">);</span>
+
+<span class="s2">/** 
+ * @brief Function to push a value in the stack 
+ * @param pointer to the stack 
+ * @param value : the value to push 
+ * @return none 
+ */</span>
+<span class="s3">void </span><span class="s1">push</span><span class="s4">(</span><span class="s1">t_stack </span><span class="s4">*, </span><span class="s3">int</span><span class="s4">);</span>
+
+<span class="s2">/** 
+ * @brief Function to pop a value from the stack 
+ * @param : pointer to the stack 
+ * @return the value popped 
+ */</span>
+<span class="s3">int </span><span class="s1">pop</span><span class="s4">(</span><span class="s1">t_stack </span><span class="s4">*);</span>
+
+<span class="s2">/** 
+ * @brief Function to get the top value of the stack 
+ * @param stack : the stack 
+ * @return the top value 
+ */</span>
+<span class="s3">int </span><span class="s1">top</span><span class="s4">(</span><span class="s1">t_stack</span><span class="s4">);</span>
+
+
+<span class="s0">#endif </span><span class="s2">//UNTITLED1_STACK_H</span>
+</pre>
+</body>
+</html>
