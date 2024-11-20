@@ -67,3 +67,40 @@ int findMinPath(p_node node, int currentSum) {
     return minSum;
 }
 
+
+//ATTENTION DANS CES DEUX FONCTIONS IL FAUDRA RAJOUTER UN TABLEAU AVEC LES MOUVEMENTS DISPO
+//LA FONCTION CREATE PERMET DE DEBUTER LA RECURSIVITE
+//LA FONCTION BUILD FAIT LA RECURSIVITE DANS LA FNCTION CREATE
+
+
+//LAST UPDATE
+
+
+void buildTreeFromMap(p_node currentNode, t_map map, int x, int y, int remainingMoves) {
+    // SI ON SORT DES LIMITES OU Y'A PLUS DE MOUVEMENTS DISPO C FINITO
+    if (remainingMoves <= 0 || x < 0 || x >= map.y_max || y < 0 || y >= map.x_max) {
+        return;
+    }
+
+    t_node newNode = createNode(map.costs[x][y]);
+    addChild(currentNode, &newNode);
+
+    // EN IMAGINEANT QU'ON AI QUE 4 MOUVEMENTTS UP DOWN LEFT RIGHT
+    int movements[4][2] = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+
+    for (int i = 0; i < 4; i++) {
+        int newX = x + movements[i][0];
+        int newY = y + movements[i][1];
+        buildTreeFromMap(currentNode->nodes[currentNode->nbSons - 1], map, newX, newY, remainingMoves - 1);
+    }
+}
+
+
+p_tree createTreeFromMap(t_map map, int startX, int startY, int maxMoves) {
+    p_tree tree = malloc(sizeof(t_tree));
+    tree->root = malloc(sizeof(t_node));
+    *tree->root = createNode(map.costs[startY][startX]);
+
+    buildTreeFromMap(tree->root, map, startY, startX, maxMoves);
+    return tree;
+}
