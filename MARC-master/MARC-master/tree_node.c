@@ -18,45 +18,51 @@ p_tree createTree(p_node root) {
     return newTree;
 }
 
-void displayTree(p_node node, int level) {
-    if (level > 0){
-        for (int k = 0; k < level; k++){
-            printf("    ");
-        }
-    }
-    printf("%d\n", node->value);
-
-    if (node->nbSons > 0) {
-        for (int i = 0; i < node->nbSons; i++) {
-            if (i == node->nbSons - 1) {
-                displayTree(node->nodes[i], level+1);
-            } else {
-                displayTree(node->nodes[i], level+1);
-            }
-        }
-    }
-}
-
 void addChild(p_node parent, p_node child) {
     parent->nbSons++;
     parent->nodes = (p_node *)realloc(parent->nodes, parent->nbSons * sizeof(p_node));
     parent->nodes[parent->nbSons - 1] = child;
 }
 
-int findMinPath(p_node node, int currentSum) {
+void displayTree(p_node node, int level) {
+    //chaque espace correspond à un niveau
+    //les noeuds étant sur le même espace (même nb de tabs depuis la gauche) sont sur la même couche de l'abre
+    if (level > 0) {
+        for (int k = 0; k < level; k++) {
+            printf("    "); // Affiche n espace(s) pour n niveau(x)
+        }
+    }
+    // Affiche la valeur du nœud courant
+    printf("%d\n", node->value);
 
+    // Vérifie si le nœud a des enfants
+    if (node->nbSons > 0) {
+        // Parcourt récursivement chaque enfant
+        for (int i = 0; i < node->nbSons; i++) {
+            displayTree(node->nodes[i], level + 1);
+        }
+    }
+}
+
+
+int findMinPath(p_node node, int currentSum) {
+    // Vérifie si le nœud courant contient la valeur 0 (arrivée à la base)
     if (node->value == 0) {
         return currentSum;
     }
 
+    // Ajoute la valeur du nœud courant à la somme
     currentSum += node->value;
 
+    // Si le nœud n'a pas d'enfants (fin du chemin)
     if (node->nbSons == 0) {
         return currentSum;
     }
 
+    // Initialise la somme minimale avec une grande valeur
     int minSum = 99999999;
 
+    // Parcourt chaque enfant pour calculer les sommes minimales récursivement
     for (int i = 0; i < node->nbSons; i++) {
         int childMinSum = findMinPath(node->nodes[i], currentSum);
         if (childMinSum < minSum) {
@@ -67,7 +73,6 @@ int findMinPath(p_node node, int currentSum) {
     return minSum;
 }
 
-
 //ATTENTION DANS CES DEUX FONCTIONS IL FAUDRA RAJOUTER UN TABLEAU AVEC LES MOUVEMENTS DISPO
 //LA FONCTION CREATE PERMET DE DEBUTER LA RECURSIVITE
 //LA FONCTION BUILD FAIT LA RECURSIVITE DANS LA FNCTION CREATE
@@ -77,7 +82,7 @@ int findMinPath(p_node node, int currentSum) {
 
 
 void buildTreeFromMap(p_node currentNode, t_map map, int x, int y, int remainingMoves) {
-    // SI ON SORT DES LIMITES OU Y'A PLUS DE MOUVEMENTS DISPO C FINITO
+    // SI ON SORT DES LIMITES OU Y'A PLUS DE MOUVEMENTS ON TERMINE L'ACTION
     if (remainingMoves <= 0 || x < 0 || x >= map.y_max || y < 0 || y >= map.x_max) {
         return;
     }
@@ -86,7 +91,7 @@ void buildTreeFromMap(p_node currentNode, t_map map, int x, int y, int remaining
     t_node newNode = createNode(map.costs[x][y]);
     addChild(currentNode, &newNode);
 
-    // EN IMAGINEANT QU'ON AI QUE 4 MOUVEMENTTS UP DOWN LEFT RIGHT
+    // EN IMAGINEANT QU'ON AI QUE 4 MOUVEMENTTS UP DOWN LEFT RIGHT (TEMPORAIRE)
     int movements[4][2] = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
 
     //on recrée des noeuds pour chaque deplacements en rappelant la fonction
@@ -99,7 +104,7 @@ void buildTreeFromMap(p_node currentNode, t_map map, int x, int y, int remaining
 
 
 p_tree createTreeFromMap(t_map map, int startX, int startY, int maxMoves) {
-    //je pense qu'on peut utiliser les fonctions deja faites mais vsy flm
+    //je pense qu'on peut utiliser les fonctions deja faites (ça serait mieux)
     //on alloue dynamiquement et on créer ce qui va nous servir
     p_tree tree = malloc(sizeof(t_tree));
     tree->root = malloc(sizeof(t_node));
