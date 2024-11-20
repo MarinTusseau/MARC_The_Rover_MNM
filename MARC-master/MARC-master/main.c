@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include "map.h"
+#include "moves.h"
 
 int main() {
     t_map map;
@@ -32,5 +33,19 @@ int main() {
         printf("\n");
     }
     displayMap(map);
+
+    srand(time(NULL));
+    int movementPerPhase = 9;
+    Dispo initDispo = {
+            .disponibilities = {22, 15, 7, 7, 21, 21, 7}
+    };
+    t_move choice[5];
+    Dispo dispoNow = initDispo;
+    chooseMovements(&dispoNow, choice, movementPerPhase);
+
+    printf("\nMovements availible for this phase :\n");
+    for (int i = 0; i < movementPerPhase; i++) {
+        printf("%s\n", getMoveAsString(choice[i]));
+    }
     return 0;
 }

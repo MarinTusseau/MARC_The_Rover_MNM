@@ -24,7 +24,4 @@ p_node createNode(int value);
 
 p_tree createTree(p_node n);
 
-
-
-
 #endif //UNTITLED1_TREE_NODE_H

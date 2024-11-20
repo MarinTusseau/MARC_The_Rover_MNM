@@ -1,4 +1,4 @@
-# Install script for directory: C:/Users/malog/CLionProjects/MARC_The_Rover_MNM/MARC-master/MARC-master
+# Install script for directory: C:/Users/marin/CLionProjects/MARC_The_Rover_MNM/MARC-master/MARC-master
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -45,5 +45,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "C:/Users/malog/CLionProjects/MARC_The_Rover_MNM/MARC-master/MARC-master/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "C:/Users/marin/CLionProjects/MARC_The_Rover_MNM/MARC-master/MARC-master/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")
