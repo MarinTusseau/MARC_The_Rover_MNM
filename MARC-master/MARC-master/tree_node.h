@@ -8,6 +8,8 @@
 #include <stdlib.h>
 #include "map.h"
 #include "moves.h"
+#include "loc.h"
+
 
 struct s_node
 {
@@ -15,6 +17,8 @@ struct s_node
     struct s_node **nodes;
     int nbSons;
     t_move dispo;
+    int x_pos;
+    int y_pos;
 };
 
 typedef struct s_node t_node, *p_node;
@@ -34,8 +38,8 @@ int findMinPath(p_node node, int currentSum);
 
 void displayTree(p_node node, int level);
 
-p_tree createTreeFromMap(t_map map, int startX, int startY, int maxMoves);
+p_tree createTreeFromMap(p_node currentNode, t_map map, t_localisation *loc, t_move *remainingMoves, int nb_moves);
 
-void buildTreeFromMap(p_node currentNode, t_map map, int x, int y, int remainingMoves);
+void buildTreeFromMap(p_node currentNode, t_map map, t_localisation *loc, t_move *remainingMoves, int nb_moves);
 
 #endif //UNTITLED1_TREE_NODE_H

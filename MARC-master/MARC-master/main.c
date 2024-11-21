@@ -23,6 +23,7 @@ for (int i = 0; i < map.y_max; i++)
     }
     printf("\n");
 }
+/**
 // printf the costs, aligned left 5 digits
 for (int i = 0; i < map.y_max; i++)
 {
@@ -32,6 +33,7 @@ for (int i = 0; i < map.y_max; i++)
     }
     printf("\n");
 }
+
 displayMap(map);
 
 
@@ -66,7 +68,7 @@ displayMap(map);
 
     printf("\nLe chemin le plus court vers un '0' vaut : ");
     printf("%d\n", findMinPath(t->root,0));
-
+**/
     printf("\n--------------------------------------------\n\n");
     srand(time(NULL));
     int movementPerPhase = 9;
@@ -76,12 +78,24 @@ displayMap(map);
     t_move choice[5];
     Dispo dispoNow = initDispo;
     chooseMovements(&dispoNow, choice, movementPerPhase);
-
+/**
     printf("\nMovements availible for this phase :\n");
     for (int i = 0; i < movementPerPhase; i++) {
         printf("%s\n", getMoveAsString(choice[i]));
     }
-
+**/
+    t_localisation loc;
+    loc.ori = NORTH;
+    loc.pos.x = 2;
+    int x = loc.pos.x;
+    loc.pos.y = 3;
+    int y = loc.pos.y;
+    int val_start = map.costs[x][y];
+    t_node n_start = createNode(val_start);
+    p_tree t2 = createTreeFromMap(&n_start, map, &loc, choice, 5);
+    displayTree(t2->root,0);
+    printf("\nLe chemin le plus court vers un '0' vaut : ");
+    printf("%d\n", findMinPath(t2->root,0));
 
 
 

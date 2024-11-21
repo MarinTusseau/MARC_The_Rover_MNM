@@ -53,7 +53,6 @@ int findMinPath(p_node node, int currentSum) {
 
     // Ajoute la valeur du nœud courant à la somme
     currentSum += node->value;
-
     // Si le nœud n'a pas d'enfants (fin du chemin)
     if (node->nbSons == 0) {
         return currentSum;
@@ -81,37 +80,54 @@ int findMinPath(p_node node, int currentSum) {
 //LAST UPDATE
 
 
-void buildTreeFromMap(p_node currentNode, t_map map, int x, int y, int remainingMoves) {
+void buildTreeFromMap(p_node currentNode, t_map map, t_localisation *loc, t_move *remainingMoves, int nb_moves) {
+    int x = loc->pos.x;
+    int y = loc->pos.y;
     // SI ON SORT DES LIMITES OU Y'A PLUS DE MOUVEMENTS ON TERMINE L'ACTION
-    if (remainingMoves <= 0 || x < 0 || x >= map.y_max || y < 0 || y >= map.x_max) {
+    if (nb_moves <= 0 || x < 0 || y >= map.y_max || y < 0 || x >= map.x_max) {
         return;
     }
 
     //on crée le noeud (si la condition au dessus est respectée) du déplacement dans l'arbre
     t_node newNode = createNode(map.costs[x][y]);
+    newNode.x_pos = x;
+    newNode.y_pos = y;
     addChild(currentNode, &newNode);
 
-    // EN IMAGINEANT QU'ON AI QUE 4 MOUVEMENTTS UP DOWN LEFT RIGHT (TEMPORAIRE)
-    int movements[4][2] = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
 
     //on recrée des noeuds pour chaque deplacements en rappelant la fonction
-    for (int i = 0; i < 4; i++) {
-        int newX = x + movements[i][0];
-        int newY = y + movements[i][1];
-        buildTreeFromMap(currentNode->nodes[currentNode->nbSons - 1], map, newX, newY, remainingMoves - 1);
+    for (int i = 0; i < nb_moves; i++) {
+        t_move *moves = remainingMoves;
+        t_move move = moves[i];
+        int k = 0;
+        while(moves[k]!=move){
+            k++;
+        }
+        if (k<nb_moves){
+            for (k+1; k < nb_moves - 1; k++){
+                moves[k] = moves [k+1];
+            }
+        }
+        else{
+            moves[nb_moves-2] = moves[nb_moves-1];
+        }
+        updateLocalisation(loc, move);
+        buildTreeFromMap(currentNode->nodes[currentNode->nbSons - 1], map, loc, moves, nb_moves - 1);
     }
 }
 
 
-p_tree createTreeFromMap(t_map map, int startX, int startY, int maxMoves) {
+p_tree createTreeFromMap(p_node currentNode, t_map map, t_localisation *loc, t_move *remainingMoves, int nb_moves) {
     //je pense qu'on peut utiliser les fonctions deja faites (ça serait mieux)
     //on alloue dynamiquement et on créer ce qui va nous servir
+    int x = loc->pos.x;
+    int y = loc->pos.y;
     p_tree tree = malloc(sizeof(t_tree));
     tree->root = malloc(sizeof(t_node));
-    *tree->root = createNode(map.costs[startY][startX]);
+    *tree->root = createNode(map.costs[y][x]);
     //tree->root->dispo = moves
 
     //on lance la fonction réccursive pour créer l'arbre avec la map
-    buildTreeFromMap(tree->root, map, startY, startX, maxMoves);
+    buildTreeFromMap(tree->root, map, loc, remainingMoves, nb_moves);
     return tree;
 }
