@@ -7,12 +7,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "map.h"
+#include "moves.h"
 
 struct s_node
 {
     int value;
     struct s_node **nodes;
     int nbSons;
+    t_move dispo;
 };
 
 typedef struct s_node t_node, *p_node;
