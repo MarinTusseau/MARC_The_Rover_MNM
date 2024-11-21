@@ -3,7 +3,6 @@
 #include "tree_node.h"
 
 int main() {
-    /**
 t_map map;
 
 // The following preprocessor directive checks if the code is being compiled on a Windows system.
@@ -34,10 +33,10 @@ for (int i = 0; i < map.y_max; i++)
     printf("\n");
 }
 displayMap(map);
-**/
 
-    printf("--------------------------------------------\n");
 
+    printf("\n--------------------------------------------\n\n");
+    printf("Exemple d'arbre :\n");
     t_node n1 = createNode(7);
     p_tree t = createTree(&n1);
     t_node n2 = createNode(4);
@@ -62,13 +61,26 @@ displayMap(map);
     addChild(&n1, &n4);
     t_node n9 = createNode(0);
     addChild(&n4, &n9);
-
+    printf("! Chaque noeud aura ses fils sur sa droite et sur un meme niveau !\n! Chaque espace correspond a un niveau (ou couche) de l'arbre !\n");
     displayTree(t->root, 0);
 
-    printf("\nLe chemin le plus court vers un '0' est : ");
+    printf("\nLe chemin le plus court vers un '0' vaut : ");
     printf("%d\n", findMinPath(t->root,0));
 
+    printf("\n--------------------------------------------\n\n");
+    srand(time(NULL));
+    int movementPerPhase = 9;
+    Dispo initDispo = {
+            .disponibilities = {22, 15, 7, 7, 21, 21, 7}
+    };
+    t_move choice[5];
+    Dispo dispoNow = initDispo;
+    chooseMovements(&dispoNow, choice, movementPerPhase);
 
+    printf("\nMovements availible for this phase :\n");
+    for (int i = 0; i < movementPerPhase; i++) {
+        printf("%s\n", getMoveAsString(choice[i]));
+    }
 
 
 

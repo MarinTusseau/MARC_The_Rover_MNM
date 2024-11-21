@@ -103,7 +103,7 @@ void buildTreeFromMap(p_node currentNode, t_map map, int x, int y, int remaining
 }
 
 
-p_tree createTreeFromMap(t_map map, int startX, int startY, int maxMoves, ) {
+p_tree createTreeFromMap(t_map map, int startX, int startY, int maxMoves) {
     //je pense qu'on peut utiliser les fonctions deja faites (ça serait mieux)
     //on alloue dynamiquement et on créer ce qui va nous servir
     p_tree tree = malloc(sizeof(t_tree));

@@ -1,4 +1,5 @@
 #include "moves.h"
+#include <stdio.h>
 
 /* prototypes of local functions */
 /* local functions are used only in this file, as helper functions */
@@ -125,7 +126,7 @@ t_localisation translate(t_localisation loc, t_move move)
         default:
             break;
     }
-        return loc_init(res.x, res.y, loc.ori);
+    return loc_init(res.x, res.y, loc.ori);
 
 }
 
@@ -148,4 +149,27 @@ void updateLocalisation(t_localisation *p_loc, t_move m)
 {
     *p_loc = move(*p_loc, m);
     return;
+}
+
+void chooseMovements(Dispo *dispo, t_move choice[], int nbChoice) {
+    printf("Movement disponibilities at the beginning :\n");
+    for (int k = 0; k < 7; k++) {
+        printf("%d ", dispo->disponibilities[k]);
+    }
+    printf("\n\n");
+    for (int i = 0; i < nbChoice; i++) {
+        int movementChosen = rand() % 7;
+        while (dispo->disponibilities[movementChosen] <= 0){
+            movementChosen = rand() % 7;
+        }
+        choice[i] = (t_move)movementChosen;
+        dispo->disponibilities[movementChosen]--;
+
+        printf("Movement chosen: %s\n", getMoveAsString(choice[i]));
+        printf("Disponibilites after the choice %d : ", i + 1);
+        for (int k = 0; k < 7; k++) {
+            printf("%d ", dispo->disponibilities[k]);
+        }
+        printf("\n");
+    }
 }
