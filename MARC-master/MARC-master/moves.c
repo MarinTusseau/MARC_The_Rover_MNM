@@ -180,7 +180,7 @@ void chooseMovements(Dispo *dispo, t_move choice[], int nbChoice) {
         printf("\n");
     }
 }
-
+/**
 t_move *getRandomMoves(int N)
 {
     int nbmoves[]={22,15,7,7,21,21,7};
@@ -201,3 +201,4 @@ t_move *getRandomMoves(int N)
     }
     return moves;
 }
+ **/
