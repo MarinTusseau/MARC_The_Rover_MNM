@@ -139,9 +139,16 @@ char *getMoveAsString(t_move move)
 
 t_localisation move(t_localisation loc, t_move move)
 {
-    t_localisation new_loc;
-    new_loc.ori = rotate(loc.ori, move);
-    new_loc = translate(loc, move);
+    t_localisation new_loc=loc;
+    if ((move >=T_LEFT) && (move <= U_TURN))
+    {
+        new_loc.ori = rotate(loc.ori, move);
+    }
+    else
+    {
+        new_loc = translate(loc, move);
+    }
+
     return new_loc;
 }
 
@@ -172,4 +179,25 @@ void chooseMovements(Dispo *dispo, t_move choice[], int nbChoice) {
         }
         printf("\n");
     }
+}
+
+t_move *getRandomMoves(int N)
+{
+    int nbmoves[]={22,15,7,7,21,21,7};
+    int total_moves=100;
+    t_move *moves = (t_move *)malloc(N * sizeof(t_move));
+    for (int i = 0; i < N; i++)
+    {
+        int r = rand() % total_moves;
+        int type=0;
+        while (r >= nbmoves[type])
+        {
+            r -= nbmoves[type];
+            type++;
+        }
+        nbmoves[type]--;
+        total_moves--;
+        moves[i] = (t_move )type;
+    }
+    return moves;
 }
