@@ -14,7 +14,7 @@
 struct s_node
 {
     int value;
-    struct s_node **nodes;
+    struct s_node **child;
     int nbSons;
     t_move dispo;
     int x_pos;
@@ -41,5 +41,7 @@ void displayTree(p_node node, int level);
 p_tree createTreeFromMap(p_node currentNode, t_map map, t_localisation *loc, t_move *remainingMoves, int nb_moves);
 
 void buildTreeFromMap(p_node currentNode, t_map map, t_localisation *loc, t_move *remainingMoves, int nb_moves);
+
+void freeTree(p_node);
 
 #endif //UNTITLED1_TREE_NODE_H

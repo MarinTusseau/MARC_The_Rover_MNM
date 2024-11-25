@@ -7,7 +7,7 @@
 t_node createNode(int value){
     t_node n;
     n.value = value;
-    n.nodes = NULL;
+    n.child = NULL;
     n.nbSons = 0;
     return n;
 }
@@ -20,29 +20,32 @@ p_tree createTree(p_node root) {
 
 void addChild(p_node parent, p_node child) {
     parent->nbSons++;
-    parent->nodes = (p_node *)realloc(parent->nodes, parent->nbSons * sizeof(p_node));
-    parent->nodes[parent->nbSons - 1] = child;
+    parent->child = (p_node *)realloc(parent->child, parent->nbSons * sizeof(p_node));
+    parent->child[parent->nbSons - 1] = child;
 }
 
 void displayTree(p_node node, int level) {
-    //chaque espace correspond à un niveau
-    //les noeuds étant sur le même espace (même nb de tabs depuis la gauche) sont sur la même couche de l'abre
-    if (level > 0) {
-        for (int k = 0; k < level; k++) {
-            printf("    "); // Affiche n espace(s) pour n niveau(x)
-        }
+    if (!node) {
+        return; // Évite les erreurs de segmentation
     }
-    // Affiche la valeur du nœud courant
-    printf("%d\n", node->value);
 
-    // Vérifie si le nœud a des enfants
-    if (node->nbSons > 0) {
-        // Parcourt récursivement chaque enfant
-        for (int i = 0; i < node->nbSons; i++) {
-            displayTree(node->nodes[i], level + 1);
-        }
+    // Indentation pour le niveau actuel
+    for (int i = 0; i < level; i++) {
+        printf("    ");
+    }
+
+    // Affiche les détails du nœud
+    printf("%s, (%d, %d)\n",
+           getMoveAsString((t_move)node->dispo),
+           node->x_pos,
+           node->y_pos);
+
+    // Parcourt les enfants récursivement
+    for (int i = 0; i < node->nbSons; i++) {
+        displayTree(node->child[i], level + 1);
     }
 }
+
 
 
 int findMinPath(p_node node, int currentSum) {
@@ -63,7 +66,7 @@ int findMinPath(p_node node, int currentSum) {
 
     // Parcourt chaque enfant pour calculer les sommes minimales récursivement
     for (int i = 0; i < node->nbSons; i++) {
-        int childMinSum = findMinPath(node->nodes[i], currentSum);
+        int childMinSum = findMinPath(node->child[i], currentSum);
         if (childMinSum < minSum) {
             minSum = childMinSum;
         }
@@ -81,53 +84,65 @@ int findMinPath(p_node node, int currentSum) {
 
 
 void buildTreeFromMap(p_node currentNode, t_map map, t_localisation *loc, t_move *remainingMoves, int nb_moves) {
-    int x = loc->pos.x;
-    int y = loc->pos.y;
-    // SI ON SORT DES LIMITES OU Y'A PLUS DE MOUVEMENTS ON TERMINE L'ACTION
-    if (nb_moves <= 0 || x < 0 || y >= map.y_max || y < 0 || x >= map.x_max) {
+    if (nb_moves <= 0) {
         return;
     }
 
-    //on crée le noeud (si la condition au dessus est respectée) du déplacement dans l'arbre
-    t_node newNode = createNode(map.costs[x][y]);
-    newNode.x_pos = x;
-    newNode.y_pos = y;
-    addChild(currentNode, &newNode);
+    for (int i = 0; i < 7; i++) {
+        if (remainingMoves[i] > 0) {
+            remainingMoves[i]--;
 
+            t_localisation newLoc = *loc;
+            updateLocalisation(&newLoc, (t_move)i);
 
-    //on recrée des noeuds pour chaque deplacements en rappelant la fonction
-    for (int i = 0; i < nb_moves; i++) {
-        t_move *moves = remainingMoves;
-        t_move move = moves[i];
-        int k = 0;
-        while(moves[k]!=move){
-            k++;
-        }
-        if (k<nb_moves){
-            for (k+1; k < nb_moves - 1; k++){
-                moves[k] = moves [k+1];
+            int x = newLoc.pos.x;
+            int y = newLoc.pos.y;
+            if (x < 0 || y < 0 || x >= map.x_max || y >= map.y_max) {
+                remainingMoves[i]++;
+                continue;
             }
+
+            p_node newNode = malloc(sizeof(t_node));
+            *newNode = createNode(map.costs[y][x]);
+            newNode->x_pos = x;
+            newNode->y_pos = y;
+            newNode->dispo = i;
+
+            addChild(currentNode, newNode);
+
+            buildTreeFromMap(newNode, map, &newLoc, remainingMoves, nb_moves - 1);
+            remainingMoves[i]++;
         }
-        else{
-            moves[nb_moves-2] = moves[nb_moves-1];
-        }
-        updateLocalisation(loc, move);
-        buildTreeFromMap(currentNode->nodes[currentNode->nbSons - 1], map, loc, moves, nb_moves - 1);
     }
 }
 
 
+
 p_tree createTreeFromMap(p_node currentNode, t_map map, t_localisation *loc, t_move *remainingMoves, int nb_moves) {
-    //je pense qu'on peut utiliser les fonctions deja faites (ça serait mieux)
-    //on alloue dynamiquement et on créer ce qui va nous servir
     int x = loc->pos.x;
     int y = loc->pos.y;
+
     p_tree tree = malloc(sizeof(t_tree));
     tree->root = malloc(sizeof(t_node));
     *tree->root = createNode(map.costs[y][x]);
-    //tree->root->dispo = moves
+    tree->root->x_pos = x;
+    tree->root->y_pos = y;
 
-    //on lance la fonction réccursive pour créer l'arbre avec la map
     buildTreeFromMap(tree->root, map, loc, remainingMoves, nb_moves);
     return tree;
+}
+
+void freeTree(p_node node) {
+    if (node == NULL) {
+        return;
+    }
+
+    for (int i = 0; i < node->nbSons; i++) {
+        freeTree(node->child[i]);
+    }
+
+    if (node->child != NULL) {
+        free(node->child);
+    }
+    free(node);
 }

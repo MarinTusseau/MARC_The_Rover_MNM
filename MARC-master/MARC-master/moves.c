@@ -1,5 +1,6 @@
 #include "moves.h"
 #include <stdio.h>
+#include "map.h"
 
 /* prototypes of local functions */
 /* local functions are used only in this file, as helper functions */
@@ -143,9 +144,7 @@ t_localisation move(t_localisation loc, t_move move)
     if ((move >=T_LEFT) && (move <= U_TURN))
     {
         new_loc.ori = rotate(loc.ori, move);
-    }
-    else
-    {
+    } else {
         new_loc = translate(loc, move);
     }
 
@@ -170,6 +169,7 @@ void chooseMovements(Dispo *dispo, t_move choice[], int nbChoice) {
             movementChosen = rand() % 7;
         }
         choice[i] = (t_move)movementChosen;
+
         dispo->disponibilities[movementChosen]--;
 
         printf("Movement chosen: %s\n", getMoveAsString(choice[i]));
@@ -179,25 +179,4 @@ void chooseMovements(Dispo *dispo, t_move choice[], int nbChoice) {
         }
         printf("\n");
     }
-}
-
-t_move *getRandomMoves(int N)
-{
-    int nbmoves[]={22,15,7,7,21,21,7};
-    int total_moves=100;
-    t_move *moves = (t_move *)malloc(N * sizeof(t_move));
-    for (int i = 0; i < N; i++)
-    {
-        int r = rand() % total_moves;
-        int type=0;
-        while (r >= nbmoves[type])
-        {
-            r -= nbmoves[type];
-            type++;
-        }
-        nbmoves[type]--;
-        total_moves--;
-        moves[i] = (t_move )type;
-    }
-    return moves;
 }
