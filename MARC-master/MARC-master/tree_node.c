@@ -24,11 +24,11 @@ void addChild(p_node parent, p_node child) {
     parent->child[parent->nbSons - 1] = child;
 }
 
-//Above are the basic functions used before on trees and sons
+// Above are the basic functions used before on trees and sons
 
 void displayTree(p_node node, int level) {
     if (!node) {
-        return; // To avoid segmentation fault (we had this error so many times)
+        return; // To avoid segmentation fault (we had this error many times)
     }
 
     // For every level we had a tabulation
@@ -58,6 +58,7 @@ int findMinPath(p_node node, int currentSum) {
 
     // Add the cost of the node to the current sum
     currentSum += node->value;
+
     // If the node have no child we end it here
     if (node->nbSons == 0) {
         return currentSum;
@@ -71,9 +72,12 @@ int findMinPath(p_node node, int currentSum) {
         int childMinSum = findMinPath(node->child[i], currentSum);
         if (childMinSum < minSum) {
             minSum = childMinSum;
+            int x = node->child[i]->x_pos;
+            int y = node->child[i]->y_pos;
+            printf("[x : %d, y : %d] --> ",x,y);
         }
     }
-
+    printf("END");
     return minSum;
 }
 
@@ -84,40 +88,40 @@ int findMinPath(p_node node, int currentSum) {
 
 
 void buildTreeFromMap(p_node currentNode, t_map map, t_localisation *loc, t_move *remainingMoves, int nb_moves) {
-    //If there are no moves left we don't do anything (stopping condition)
+    // If there are no moves left we don't do anything (stopping condition)
     if (nb_moves <= 0) {
         return;
     }
 
-    //For every move remaining
+    // For every move remaining
     for (int i = 0; i < 7; i++) {
         if (remainingMoves[i] > 0) {
             remainingMoves[i]--;
 
-            //Updating the new coord. depending on the move selected
+            // Updating the new coord. depending on the move selected
             t_localisation newLoc = *loc;
             updateLocalisation(&newLoc, (t_move)i);
 
             int x = newLoc.pos.x;
             int y = newLoc.pos.y;
 
-            //If we get out of the map
+            // If we get out of the map
             if (x < 0 || y < 0 || x >= map.x_max || y >= map.y_max) {
                 remainingMoves[i]++;
-                continue;
+                continue; // Next iteration (i++)
             }
 
-            //We create a new node with the corrct parameters
+            // We create a new node with the corrct parameters
             p_node newNode = malloc(sizeof(t_node));
             *newNode = createNode(map.costs[y][x]);
             newNode->x_pos = x;
             newNode->y_pos = y;
             newNode->dispo = i;
 
-            //And we add it to the tree
+            // And we add it to the tree
             addChild(currentNode, newNode);
 
-            //Finally we reload the function
+            // Finally we reload the function
             buildTreeFromMap(newNode, map, &newLoc, remainingMoves, nb_moves - 1);
             remainingMoves[i]++;
         }
@@ -129,17 +133,17 @@ void buildTreeFromMap(p_node currentNode, t_map map, t_localisation *loc, t_move
 p_tree createTreeFromMap(p_node currentNode, t_map map, t_localisation *loc, t_move *remainingMoves, int nb_moves) {
     int x = loc->pos.x;
     int y = loc->pos.y;
-    //Here to make the use of x and y easier
+    // Here to make the use of x and y easier
 
     p_tree tree = malloc(sizeof(t_tree));
     tree->root = malloc(sizeof(t_node));
     *tree->root = createNode(map.costs[y][x]);
     tree->root->x_pos = x;
     tree->root->y_pos = y;
-    //Creation of the tree with the correct parameters
+    // Creation of the tree with the correct parameters
 
     buildTreeFromMap(tree->root, map, loc, remainingMoves, nb_moves);
-    //We launch the recursive function
+    // We launch the recursive function
 
     return tree;
 }
