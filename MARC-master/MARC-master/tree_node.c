@@ -9,6 +9,9 @@ t_node createNode(int value){
     n.value = value;
     n.child = NULL;
     n.nbSons = 0;
+    n.x_pos = 0;
+    n.y_pos = 0;
+    n.dispo = 0;
     return n;
 }
 
