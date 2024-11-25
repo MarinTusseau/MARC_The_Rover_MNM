@@ -72,13 +72,14 @@ displayMap(map);
 **/
 
     srand(time(NULL));
-    int movementPerPhase = 9;
+    int movementPerPhase = 5;
     Dispo initDispo = {
             .disponibilities = {22, 15, 7, 7, 21, 21, 7}
     };
     t_move choice[9];
     Dispo dispoNow = initDispo;
-    chooseMovements(&dispoNow, choice, movementPerPhase);
+    t_localisation loc = loc_init(4, 6, NORTH);
+    chooseMovements(&dispoNow, choice, movementPerPhase, time(NULL), map, loc);
 
 /**
     printf("\nMovements availible for this phase :\n");
@@ -99,17 +100,6 @@ displayMap(map);
     printf("\nLe chemin le plus court vers '0' vaut : ");
     printf("%d\n", findMinPath(t2->root,0));**/
 
-    map.x_max = 5;
-    map.y_max = 5;
-    map.costs = malloc(map.y_max * sizeof(int *));
-    for (int i = 0; i < map.y_max; i++) {
-        map.costs[i] = malloc(map.x_max * sizeof(int));
-        for (int j = 0; j < map.x_max; j++) {
-            map.costs[i][j] = i + j; // j'ai fait une autre map plus petite pour eviter les potentiels erreur de test
-        }
-    }
-
-    t_localisation loc = loc_init(0, 0, NORTH);
 
     p_tree tree = createTreeFromMap(NULL, map, &loc, choice, 5);
 

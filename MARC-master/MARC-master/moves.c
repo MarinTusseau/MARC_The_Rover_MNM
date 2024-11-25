@@ -1,6 +1,8 @@
 #include "moves.h"
 #include <stdio.h>
+#include <stdlib.h>
 #include "map.h"
+#include <time.h>
 
 /* prototypes of local functions */
 /* local functions are used only in this file, as helper functions */
@@ -157,24 +159,33 @@ void updateLocalisation(t_localisation *p_loc, t_move m)
     return;
 }
 
-void chooseMovements(Dispo *dispo, t_move choice[], int nbChoice) {
-    printf("Movement disponibilities at the beginning :\n");
-    for (int k = 0; k < 7; k++) {
+#define NUM_MOVES 7
+
+void chooseMovements(Dispo *dispo, t_move choice[], int nbChoice, unsigned int seed, t_map map, t_localisation loc) {
+    srand(seed);
+    printf("Movement disponibilities at the beginning:\n");
+    for (int k = 0; k < NUM_MOVES; k++) {
         printf("%d ", dispo->disponibilities[k]);
     }
+
     printf("\n\n");
+    printf("Current cost: %d\n", map.costs[loc.pos.y][loc.pos.x]);
     for (int i = 0; i < nbChoice; i++) {
-        int movementChosen = rand() % 7;
-        while (dispo->disponibilities[movementChosen] <= 0){
-            movementChosen = rand() % 7;
+        int movementChosen = rand() % NUM_MOVES;
+        while (dispo->disponibilities[movementChosen] <= 0) {
+            movementChosen = rand() % NUM_MOVES;
         }
         choice[i] = (t_move)movementChosen;
-
         dispo->disponibilities[movementChosen]--;
 
+        updateLocalisation(&loc, choice[i]);
+
         printf("Movement chosen: %s\n", getMoveAsString(choice[i]));
-        printf("Disponibilites after the choice %d : ", i + 1);
-        for (int k = 0; k < 7; k++) {
+        printf("Current position: (%d, %d)\n", loc.pos.x, loc.pos.y);
+        printf("Current cost: %d\n", map.costs[loc.pos.y][loc.pos.x]);
+        printf("Disponibilities after the choice %d:\n", i + 1);
+
+        for (int k = 0; k < NUM_MOVES; k++) {
             printf("%d ", dispo->disponibilities[k]);
         }
         printf("\n");

@@ -4,6 +4,7 @@
 #include "loc.h"
 #include <time.h>
 #include <stdlib.h>
+#include "map.h"
 
 /**
  * @brief Array of strings for the possible moves of the robot
@@ -52,6 +53,6 @@ typedef struct {
     int disponibilities[7];
 } Dispo;
 
-void chooseMovements(Dispo *, t_move[], int);
+void chooseMovements(Dispo *, t_move[], int, unsigned int, t_map, t_localisation);
 
 #endif //UNTITLED1_MOVES_H
