@@ -106,7 +106,7 @@ displayMap(map);
     printf("Arbre des deplacements :\n");
     displayTree(tree->root, 0);
 
-    findMinPath(tree, 0);
+    findMinPath(tree->root, 0);
 
     freeTree(tree->root);
 

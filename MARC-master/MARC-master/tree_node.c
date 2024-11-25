@@ -56,6 +56,7 @@ void displayTree(p_node node, int level) {
 int findMinPath(p_node node, int currentSum) {
     // Check if the current node is the base (cost = 0)
     if (node->value == 0) {
+        printf("BASE\n");
         return currentSum;
     }
 
@@ -77,10 +78,10 @@ int findMinPath(p_node node, int currentSum) {
             minSum = childMinSum;
             int x = node->child[i]->x_pos;
             int y = node->child[i]->y_pos;
-            printf("[x : %d, y : %d] --> ",x,y);
+            printf("[x : %d, y : %d]\n",x,y);
         }
     }
-    printf("END");
+    printf("END\n");
     return minSum;
 }
 
