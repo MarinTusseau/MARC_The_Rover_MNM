@@ -14,6 +14,7 @@ t_node createNode(int value){
 p_tree createTree(p_node root) {
     p_tree newTree = (p_tree)malloc(sizeof(t_tree));
     newTree->root = root;
+    printf("Arbre cree!\n");
     return newTree;
 }
 
@@ -70,7 +71,6 @@ void displayNormalTree(p_node node, int level) {
 int findMinPath(p_node node, int currentSum) {
     // Check if the current node is the base (cost = 0)
     if (node->value == 0) {
-        printf("BASE\n");
         return currentSum;
     }
 
@@ -100,7 +100,6 @@ int findMinPath(p_node node, int currentSum) {
     }
 
     return minSum;
-    printf("END\n");
 }
 
 //LAST UPDATE

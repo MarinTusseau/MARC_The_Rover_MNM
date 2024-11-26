@@ -14,44 +14,17 @@ int main() {
     map = createMapFromFile("../maps/example1.map");
 #endif
 
-
-
-
-
-/**
-    printf("\nMovements availible for this phase :\n");
-    for (int i = 0; i < movementPerPhase; i++) {
-        printf("%s\n", getMoveAsString(choice[i]));
-    }
-
-    t_localisation loc;
-    loc.ori = NORTH;
-    loc.pos.x = 2;
-    int x = loc.pos.x;
-    loc.pos.y = 3;
-    int y = loc.pos.y;
-    int val_start = map.costs[x][y];
-    t_node n_start = createNode(val_start);
-    p_tree t2 = createTreeFromMap(&n_start, map, &loc, choice, 5);
-    displayTree(t2->root,0);
-    printf("\nLe chemin le plus court vers '0' vaut : ");
-    printf("%d\n", findMinPath(t2->root,0));**/
-
-    //findMinPath(tree->root, 0);
-
     int choix = 999;
     while (choix != 0) {
         printf("\n-------- MENU --------\n\n");
         printf("1. Afficher la map topographique\n");
         printf("2. Lancer et afficher la selection de mouvements aleatoire et la sequence de deplacement\n");
         printf("3. Afficher l'arbre complet (! La taille peut-etre consequente !)\n");
-        printf("4. Afficher les 3 types de map\n");
-        printf("91 Sequence de presentation orale no1\n");
-        printf("92 Sequence de presentation orale no2\n");
-        printf("93 Sequence de presentation orale no3\n");
+        printf("4. Afficher la map avec le cout unique de chaque case \n");
+        printf("5. Afficher la map avec les cout totaux additones depuis le depart \n");
+        printf("6. Presentation et affichage des fonctions de base pour un arbre n-aire sans coordonees \n");
         printf("0. SORTIE DU PROGRAMME");
 
-        printf("\n!! Les choix 9X correspondent aux sequences servant a la presentation orale uniquement !!\n");
         printf("\nFaites un choix parmi ceux ci-dessus : ");
         scanf("%d", &choix);
         printf("\n");
@@ -61,10 +34,11 @@ int main() {
                 displayMap(map);
                 break;
             case 2:
-                printf("Choisissez les coordonnees de depart du rover (x y) : \n");
-                printf("Coordonnees de test :\nCrevasse : 4 0\nBase : 2 1\nDepart : 4 6\n");
+                printf("Coordonnees de test :\nCrevasse : 4 0\nBase : 2 1\nDepart classique : 4 6\n");
+                printf("Choisissez les coordonnees de depart du rover (x y) : ");
                 int xInit, yInit;
                 scanf("%d %d", &xInit, &yInit);
+
                 srand(time(NULL));
                 int movementPerPhase = 5;
                 Dispo initDispo = {
@@ -93,7 +67,7 @@ int main() {
                 free(map.costs);
                 break;
             case 4:
-                printf("Map created with dimensions %d x %d\n", map.y_max, map.x_max);
+                printf("Map avec les couts uniques par case de dimension %d x %d\n\n", map.y_max, map.x_max);
                 for (int i = 0; i < map.y_max; i++)
                 {
                     for (int j = 0; j < map.x_max; j++)
@@ -104,7 +78,10 @@ int main() {
                 }
                 printf("\n");
 
-                // printf the costs, aligned left 5 digits
+
+                break;
+            case 5:
+                printf("Map avec les couts totaux pour arriver a la base\n\n");
                 for (int i = 0; i < map.y_max; i++)
                 {
                     for (int j = 0; j < map.x_max; j++)
@@ -113,12 +90,12 @@ int main() {
                     }
                     printf("\n");
                 }
-                printf("\n");
+                printf("\n");// printf the costs, aligned left 5 digits
 
-                displayMap(map);
 
                 break;
-            case 91:
+
+            case 6:
                 printf("Test des fonctions de base de creation de noeuds et d'arbre :\n");
                 t_node n1 = createNode(7);
                 p_tree t = createTree(&n1);
@@ -153,17 +130,13 @@ int main() {
                 printf("\nLe chemin le plus court vers un '0' vaut : ");
                 printf("%d\n", cout);
                 break;
-            case 92:
-                // Add code for option 92 here
-                break;
-            case 93:
-                // Add code for option 93 here
-                break;
+
             case 0:
                 printf("SORTIE DU PROGRAMME\n");
                 break;
+
             default:
-                printf("Choix invalide. Veuillez réessayer.\n");
+                printf("Choix invalide. Veuillez reessayer.\n");
                 break;
         }
     }
