@@ -87,17 +87,18 @@ int main() {
     while (choix != 0){
         printf("\n-------- MENU --------\n\n");
         printf("1. Afficher la map\n");
-        printf("2. Lancer et afficher la sélection de mouvements aléatoire\n");
-        printf("3. Afficher l'arbre complet (! La taille peut-être conséquente !)\n");
-        printf("4. Lancer et visualiser la séquence de déplacement\n");
-        printf("91 Séquence de présentation orale n°1\n");
-        printf("92 Séquence de présentation orale n°2\n");
-        printf("93 Séquence de présentation orale n°3\n");
+        printf("2. Lancer et afficher la selection de mouvements aleatoire\n");
+        printf("3. Afficher l'arbre complet (! La taille peut-etre consequente !)\n");
+        printf("4. Lancer et visualiser la sequence de deplacement\n");
+        printf("91 Sequence de presentation orale no1\n");
+        printf("92 Sequence de presentation orale no2\n");
+        printf("93 Sequence de presentation orale no3\n");
         printf("0. SORTIE DU PROGRAMME");
 
-        printf("\n! Les choix 9X correspondent aux séquences servant à la présentation orale uniquement !\n");
+        printf("\n! Les choix 9X correspondent aux sequences servant a la presentation orale uniquement !\n");
         printf("\n !!! Faites un choix parmis ceux ci-dessus : ");
         scanf("%d",&choix);
+        printf("\n");
 
         if(choix==1){
             displayMap(map);
@@ -151,9 +152,10 @@ int main() {
             printf("! Chaque noeud aura ses fils sur sa droite et sur un meme niveau !\n! Chaque espace correspond a un niveau (ou couche) de l'arbre !\n");
             displayTree(t->root, 0);
 
-            printf("Test du chemin le plus court vers la base dans un arbre sans coordonées :\n");
+            printf("Test du chemin le plus court vers la base dans un arbre sans coordonees :\n");
+            int cout = findMinPath(t->root,0);
             printf("\nLe chemin le plus court vers un '0' vaut : ");
-            printf("%d\n", findMinPath(t->root,0));
+            printf("%d\n", cout);
         }
         if(choix==92){
 

@@ -5,8 +5,8 @@ t_node createNode(int value){
     n.value = value;
     n.child = NULL;
     n.nbSons = 0;
-    n.x_pos = 0;
-    n.y_pos = 0;
+    n.x_pos = 999;
+    n.y_pos = 999;
     n.dispo = 0;
     return n;
 }
@@ -72,7 +72,10 @@ int findMinPath(p_node node, int currentSum) {
             minSum = childMinSum;
             int x = node->child[i]->x_pos;
             int y = node->child[i]->y_pos;
-            printf("[x : %d, y : %d]\n",x,y);
+            if (x != 999 | y != 999){
+                printf("[x : %d, y : %d]\n",x,y);
+            }
+
         }
     }
 
