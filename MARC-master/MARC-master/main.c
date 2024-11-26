@@ -35,41 +35,7 @@ for (int i = 0; i < map.y_max; i++)
 }
 
 displayMap(map);
-/**
-    printf("\n--------------------------------------------\n\n");
-    printf("Exemple d'arbre :\n");
-    t_node n1 = createNode(7);
-    p_tree t = createTree(&n1);
-    t_node n2 = createNode(4);
-    addChild(&n1, &n2);
-    t_node n5 = createNode(9);
-    addChild(&n2, &n5);
-    t_node n6 = createNode(10);
-    addChild(&n2, &n6);
-    t_node n3 = createNode(3);
-    addChild(&n1, &n3);
-    t_node n7 = createNode(10);
-    addChild(&n3, &n7);
-    t_node n8 = createNode(5);
-    addChild(&n3, &n8);
-    t_node n10 = createNode(7);
-    addChild(&n7, &n10);
-    t_node n11 = createNode(8);
-    addChild(&n7, &n11);
-    t_node n12 = createNode(0);
-    addChild(&n10, &n12);
-    t_node n4 = createNode(8);
-    addChild(&n1, &n4);
-    t_node n9 = createNode(0);
-    addChild(&n4, &n9);
-    printf("! Chaque noeud aura ses fils sur sa droite et sur un meme niveau !\n! Chaque espace correspond a un niveau (ou couche) de l'arbre !\n");
-    displayTree(t->root, 0);
 
-    printf("\nLe chemin le plus court vers un '0' vaut : ");
-    printf("%d\n", findMinPath(t->root,0));
-
-    printf("\n--------------------------------------------\n\n");
-**/
 
     srand(time(NULL));
     int movementPerPhase = 5;
@@ -106,7 +72,7 @@ displayMap(map);
     //printf("Arbre des deplacements :\n");
     //displayTree(tree->root, 0);
 
-    findMinPath(tree->root, 0);
+    //findMinPath(tree->root, 0);
 
     freeTree(tree->root);
 
@@ -117,9 +83,8 @@ displayMap(map);
     }
     free(map.costs);
 
-    return 0;
-    int n = 999;
-    while (n != 0){
+    int choix = 999;
+    while (choix != 0){
         printf("\n-------- MENU --------\n\n");
         printf("1. Afficher la map\n");
         printf("2. Lancer et afficher la sélection de mouvements aléatoire\n");
@@ -132,12 +97,12 @@ displayMap(map);
 
         printf("\n! Les choix 9X correspondent aux séquences servant à la présentation orale uniquement !\n");
         printf("\n !!! Faites un choix parmis ceux ci-dessus : ");
-        scanf("%d",&n);
+        scanf("%d",&choix);
 
-        if(n==1){
+        if(choix==1){
             displayMap(map);
         }
-        if(n==2){
+        if(choix==2){
             srand(time(NULL));
             int movementPerPhase = 5;
             Dispo initDispo = {
@@ -148,15 +113,15 @@ displayMap(map);
             t_localisation loc = loc_init(4, 6, NORTH);
             chooseMovements(&dispoNow, choice, movementPerPhase, time(NULL), map, loc);
         }
-        if(n==3){
+        if(choix==3){
             printf("! Chaque noeud aura ses fils sur sa droite et sur un meme niveau !\n! Chaque espace correspond a un niveau (ou couche) de l'arbre !\n");
 
         }
-        if(n==4){
+        if(choix==4){
 
 
         }
-        if(n==91){
+        if(choix==91){
             printf("Test des fonctions de base de création de noeuds et d'arbre :\n");
             t_node n1 = createNode(7);
             p_tree t = createTree(&n1);
@@ -190,15 +155,17 @@ displayMap(map);
             printf("\nLe chemin le plus court vers un '0' vaut : ");
             printf("%d\n", findMinPath(t->root,0));
         }
-        if(n==92){
+        if(choix==92){
 
 
         }
-        if(n==93){
+        if(choix==93){
 
 
         }
     }
+
+    return 0;
 
 }
 
