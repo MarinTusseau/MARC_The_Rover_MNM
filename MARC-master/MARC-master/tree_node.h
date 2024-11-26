@@ -37,6 +37,7 @@ void addChild(p_node parent, p_node child);
 int findMinPath(p_node node, int currentSum);
 
 void displayTree(p_node node, int level);
+void displayNormalTree(p_node node, int level);
 
 p_tree createTreeFromMap(p_node currentNode, t_map map, t_localisation *loc, t_move *remainingMoves, int nb_moves);
 

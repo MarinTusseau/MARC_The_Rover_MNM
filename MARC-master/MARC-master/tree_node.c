@@ -47,6 +47,26 @@ void displayTree(p_node node, int level) {
     }
 }
 
+
+void displayNormalTree(p_node node, int level) {
+    if (!node) {
+        return; // To avoid segmentation fault (we had this error many times)
+    }
+
+    // For every level we had a tabulation
+    for (int i = 0; i < level; i++) {
+        printf("    ");
+    }
+
+    // We print the different node parameter
+    printf("%d\n",node->value);
+
+    // We go through the other sons recursively
+    for (int i = 0; i < node->nbSons; i++) {
+        displayNormalTree(node->child[i], level + 1);
+    }
+}
+
 int findMinPath(p_node node, int currentSum) {
     // Check if the current node is the base (cost = 0)
     if (node->value == 0) {

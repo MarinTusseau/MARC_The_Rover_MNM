@@ -150,7 +150,7 @@ int main() {
             addChild(&n4, &n9);
             printf("Test de l'affichage d'un arbre n-aire :\n");
             printf("! Chaque noeud aura ses fils sur sa droite et sur un meme niveau !\n! Chaque espace correspond a un niveau (ou couche) de l'arbre !\n");
-            displayTree(t->root, 0);
+            displayNormalTree(t->root, 0);
 
             printf("Test du chemin le plus court vers la base dans un arbre sans coordonees :\n");
             int cout = findMinPath(t->root,0);
