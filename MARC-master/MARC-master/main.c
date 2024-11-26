@@ -34,9 +34,7 @@ for (int i = 0; i < map.y_max; i++)
     printf("\n");
 }
 
-displayMap(map);
-
-
+/**
     srand(time(NULL));
     int movementPerPhase = 5;
     Dispo initDispo = {
@@ -47,7 +45,6 @@ displayMap(map);
     t_localisation loc = loc_init(4, 6, NORTH);
     chooseMovements(&dispoNow, choice, movementPerPhase, time(NULL), map, loc);
 
-/**
     printf("\nMovements availible for this phase :\n");
     for (int i = 0; i < movementPerPhase; i++) {
         printf("%s\n", getMoveAsString(choice[i]));
