@@ -181,8 +181,7 @@ void chooseMovements(Dispo *dispo, t_move choice[], int nbChoice, unsigned int s
                 if (dispo->disponibilities[candidateMove] > 0) {
                     t_localisation newLoc = loc;
                     updateLocalisation(&newLoc, (t_move) candidateMove);
-                    if (newLoc.pos.x >= 0 && newLoc.pos.x < map.x_max && newLoc.pos.y >= 0 &&
-                        newLoc.pos.y < map.y_max) {
+                    if (newLoc.pos.x >= 0 && newLoc.pos.x < map.x_max && newLoc.pos.y >= 0 && newLoc.pos.y < map.y_max) {
                         movementChosen = candidateMove;
                         break;
                     }
@@ -196,32 +195,30 @@ void chooseMovements(Dispo *dispo, t_move choice[], int nbChoice, unsigned int s
 
             choice[totalMoves] = (t_move) movementChosen;
             dispo->disponibilities[movementChosen]--;
-
-            updateLocalisation(&loc, choice[totalMoves]);
-
             printf("Movement chosen: %s\n", getMoveAsString(choice[totalMoves]));
+        }
+        printf("\n");
+
+        for (int i = totalMoves - 5; i < totalMoves; i++) {
+            updateLocalisation(&loc, choice[i]);
+            printf("Movement applied: %s\n", getMoveAsString(choice[i]));
             printf("Current position: (%d, %d)\n", loc.pos.x, loc.pos.y);
             printf("Current cost: %d\n", map.costs[loc.pos.y][loc.pos.x]);
-            printf("Disponibilities after the choice %d:\n", totalMoves + 1);
-
-            for (int k = 0; k < NUM_MOVES; k++) {
-                printf("%d ", dispo->disponibilities[k]);
-            }
-            printf("\n");
-
             displayMapWithRover(map, loc);
-        }
 
-        if (map.costs[loc.pos.y][loc.pos.x] == 0) {
-            printf("Rover reached the base.\n");
-            return;
-        } else {
+            if (map.costs[loc.pos.y][loc.pos.x] == 0) {
+                printf("Rover reached the base.\n");
+                return;
+            }
+        }
+        if (map.costs[loc.pos.y][loc.pos.x] != 0) {
             printf("Rover did not reach the base after 5 moves. Removing 5 random moves.\n");
             for (int i = 0; i < 5 && totalMoves > 0; i++, totalMoves--) {
                 int moveToRemove = rand() % totalMoves;
                 dispo->disponibilities[choice[moveToRemove]]++;
                 for (int j = moveToRemove; j < totalMoves - 1; j++) {
                     choice[j] = choice[j + 1];
+
                 }
             }
         }
