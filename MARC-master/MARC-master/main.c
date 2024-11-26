@@ -103,8 +103,8 @@ displayMap(map);
 
     p_tree tree = createTreeFromMap(NULL, map, &loc, choice, 5);
 
-    printf("Arbre des deplacements :\n");
-    displayTree(tree->root, 0);
+    //printf("Arbre des deplacements :\n");
+    //displayTree(tree->root, 0);
 
     findMinPath(tree->root, 0);
 
@@ -118,4 +118,87 @@ displayMap(map);
     free(map.costs);
 
     return 0;
+    int n = 999;
+    while (n != 0){
+        printf("\n-------- MENU --------\n\n");
+        printf("1. Afficher la map\n");
+        printf("2. Lancer et afficher la sélection de mouvements aléatoire\n");
+        printf("3. Afficher l'arbre complet (! La taille peut-être conséquente !)\n");
+        printf("4. Lancer et visualiser la séquence de déplacement\n");
+        printf("91 Séquence de présentation orale n°1\n");
+        printf("92 Séquence de présentation orale n°2\n");
+        printf("93 Séquence de présentation orale n°3\n");
+        printf("0. SORTIE DU PROGRAMME");
+
+        printf("\n! Les choix 9X correspondent aux séquences servant à la présentation orale uniquement !\n");
+        printf("\n !!! Faites un choix parmis ceux ci-dessus : ");
+        scanf("%d",&n);
+
+        if(n==1){
+            displayMap(map);
+        }
+        if(n==2){
+            srand(time(NULL));
+            int movementPerPhase = 5;
+            Dispo initDispo = {
+                    .disponibilities = {22, 15, 7, 7, 21, 21, 7}
+            };
+            t_move choice[9];
+            Dispo dispoNow = initDispo;
+            t_localisation loc = loc_init(4, 6, NORTH);
+            chooseMovements(&dispoNow, choice, movementPerPhase, time(NULL), map, loc);
+        }
+        if(n==3){
+            printf("! Chaque noeud aura ses fils sur sa droite et sur un meme niveau !\n! Chaque espace correspond a un niveau (ou couche) de l'arbre !\n");
+
+        }
+        if(n==4){
+
+
+        }
+        if(n==91){
+            printf("Test des fonctions de base de création de noeuds et d'arbre :\n");
+            t_node n1 = createNode(7);
+            p_tree t = createTree(&n1);
+            t_node n2 = createNode(4);
+            addChild(&n1, &n2);
+            t_node n5 = createNode(9);
+            addChild(&n2, &n5);
+            t_node n6 = createNode(10);
+            addChild(&n2, &n6);
+            t_node n3 = createNode(3);
+            addChild(&n1, &n3);
+            t_node n7 = createNode(10);
+            addChild(&n3, &n7);
+            t_node n8 = createNode(5);
+            addChild(&n3, &n8);
+            t_node n10 = createNode(7);
+            addChild(&n7, &n10);
+            t_node n11 = createNode(8);
+            addChild(&n7, &n11);
+            t_node n12 = createNode(0);
+            addChild(&n10, &n12);
+            t_node n4 = createNode(8);
+            addChild(&n1, &n4);
+            t_node n9 = createNode(0);
+            addChild(&n4, &n9);
+            printf("Test de l'affichage d'un arbre n-aire :\n");
+            printf("! Chaque noeud aura ses fils sur sa droite et sur un meme niveau !\n! Chaque espace correspond a un niveau (ou couche) de l'arbre !\n");
+            displayTree(t->root, 0);
+
+            printf("Test du chemin le plus court vers la base dans un arbre sans coordonées :\n");
+            printf("\nLe chemin le plus court vers un '0' vaut : ");
+            printf("%d\n", findMinPath(t->root,0));
+        }
+        if(n==92){
+
+
+        }
+        if(n==93){
+
+
+        }
+    }
+
 }
+

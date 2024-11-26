@@ -1,7 +1,3 @@
-//
-// Created by malog on 29/10/2024.
-//
-
 #include "tree_node.h"
 
 t_node createNode(int value){
@@ -51,8 +47,6 @@ void displayTree(p_node node, int level) {
     }
 }
 
-
-
 int findMinPath(p_node node, int currentSum) {
     // Check if the current node is the base (cost = 0)
     if (node->value == 0) {
@@ -81,15 +75,12 @@ int findMinPath(p_node node, int currentSum) {
             printf("[x : %d, y : %d]\n",x,y);
         }
     }
-    printf("END\n");
+
     return minSum;
+    printf("END\n");
 }
 
-
-
-
 //LAST UPDATE
-
 
 void buildTreeFromMap(p_node currentNode, t_map map, t_localisation *loc, t_move *remainingMoves, int nb_moves) {
     // If there are no moves left we don't do anything (stopping condition)

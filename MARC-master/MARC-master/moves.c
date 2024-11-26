@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include "map.h"
 #include <time.h>
+#include <string.h>
 
 /* prototypes of local functions */
 /* local functions are used only in this file, as helper functions */
@@ -169,25 +170,102 @@ void chooseMovements(Dispo *dispo, t_move choice[], int nbChoice, unsigned int s
     }
 
     printf("\n\n");
+    displayMapWithRover(map, loc);
     printf("Current cost: %d\n", map.costs[loc.pos.y][loc.pos.x]);
-    for (int i = 0; i < nbChoice; i++) {
-        int movementChosen = rand() % NUM_MOVES;
-        while (dispo->disponibilities[movementChosen] <= 0) {
-            movementChosen = rand() % NUM_MOVES;
+    int totalMoves = 0;
+    while (totalMoves < nbChoice) {
+        for (int i = 0; i < 5 && totalMoves < nbChoice; i++, totalMoves++) {
+            int movementChosen = -1;
+            for (int attempt = 0; attempt < NUM_MOVES; attempt++) {
+                int candidateMove = rand() % NUM_MOVES;
+                if (dispo->disponibilities[candidateMove] > 0) {
+                    t_localisation newLoc = loc;
+                    updateLocalisation(&newLoc, (t_move) candidateMove);
+                    if (newLoc.pos.x >= 0 && newLoc.pos.x < map.x_max && newLoc.pos.y >= 0 &&
+                        newLoc.pos.y < map.y_max) {
+                        movementChosen = candidateMove;
+                        break;
+                    }
+                }
+            }
+
+            if (movementChosen == -1) {
+                printf("No valid moves available. Rover would go out of bounds.\n");
+                return;
+            }
+
+            choice[totalMoves] = (t_move) movementChosen;
+            dispo->disponibilities[movementChosen]--;
+
+            updateLocalisation(&loc, choice[totalMoves]);
+
+            printf("Movement chosen: %s\n", getMoveAsString(choice[totalMoves]));
+            printf("Current position: (%d, %d)\n", loc.pos.x, loc.pos.y);
+            printf("Current cost: %d\n", map.costs[loc.pos.y][loc.pos.x]);
+            printf("Disponibilities after the choice %d:\n", totalMoves + 1);
+
+            for (int k = 0; k < NUM_MOVES; k++) {
+                printf("%d ", dispo->disponibilities[k]);
+            }
+            printf("\n");
+
+            displayMapWithRover(map, loc);
         }
-        choice[i] = (t_move)movementChosen;
-        dispo->disponibilities[movementChosen]--;
 
-        updateLocalisation(&loc, choice[i]);
-
-        printf("Movement chosen: %s\n", getMoveAsString(choice[i]));
-        printf("Current position: (%d, %d)\n", loc.pos.x, loc.pos.y);
-        printf("Current cost: %d\n", map.costs[loc.pos.y][loc.pos.x]);
-        printf("Disponibilities after the choice %d:\n", i + 1);
-
-        for (int k = 0; k < NUM_MOVES; k++) {
-            printf("%d ", dispo->disponibilities[k]);
+        if (map.costs[loc.pos.y][loc.pos.x] == 0) {
+            printf("Rover reached the base.\n");
+            return;
+        } else {
+            printf("Rover did not reach the base after 5 moves. Removing 5 random moves.\n");
+            for (int i = 0; i < 5 && totalMoves > 0; i++, totalMoves--) {
+                int moveToRemove = rand() % totalMoves;
+                dispo->disponibilities[choice[moveToRemove]]++;
+                for (int j = moveToRemove; j < totalMoves - 1; j++) {
+                    choice[j] = choice[j + 1];
+                }
+            }
         }
-        printf("\n");
+    }
+
+    printf("Rover did not reach the base within the given moves.\n");
+}
+
+void displayMapWithRover(t_map map, t_localisation loc) {
+    for (int i = 0; i < map.y_max; i++) {
+        for (int rep = 0; rep < 3; rep++) {
+            for (int j = 0; j < map.x_max; j++) {
+                if (i == loc.pos.y && j == loc.pos.x && rep == 1) {
+                    printf(" Ro ");
+                } else {
+                    char c[4];
+                    switch (map.soils[i][j]) {
+                        case BASE_STATION:
+                            if (rep == 1) {
+                                strcpy(c, " B ");
+                            } else {
+                                strcpy(c, "   ");
+                            }
+                            break;
+                        case PLAIN:
+                            strcpy(c, "---");
+                            break;
+                        case ERG:
+                            strcpy(c, "~~~");
+                            break;
+                        case REG:
+                            strcpy(c, "^^^");
+                            break;
+                        case CREVASSE:
+                            sprintf(c, "%c%c%c", 219, 219, 219);
+                            break;
+                        default:
+                            strcpy(c, "???");
+                            break;
+                    }
+                    printf("%s", c);
+                }
+            }
+            printf("\n");
+        }
     }
 }

@@ -55,4 +55,6 @@ typedef struct {
 
 void chooseMovements(Dispo *, t_move[], int, unsigned int, t_map, t_localisation);
 
+void displayMapWithRover(t_map, t_localisation);
+
 #endif //UNTITLED1_MOVES_H
