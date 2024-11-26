@@ -11,7 +11,6 @@
 
 1. Assurez-vous que toutes les structures de données (map, tree, stack, queue) sont correctement initialisées.  
 2. Vérifiez les fichiers d’entrée (ex. `map`) pour qu’ils soient cohérents (pas de dépassement de limites dans les coordonnées).  
-3. Compiler avec `gcc` en utilisant l'option `-g` pour faciliter le débogage.  
 
 ---
 
