@@ -170,10 +170,17 @@ void chooseMovements(Dispo *dispo, t_move choice[], int nbChoice, unsigned int s
     }
 
     printf("\n\n");
-    displayMapWithRover(map, loc);
+    printf("Current position: (%d, %d)\n", loc.pos.x, loc.pos.y);
     printf("Current cost: %d\n", map.costs[loc.pos.y][loc.pos.x]);
+    displayMapWithRover(map, loc);
+    if(map.soils[loc.pos.y][loc.pos.x] == CREVASSE) {
+        printf("Rover felt into the trou and KABOOOUUUUM !\n");
+        return;
+    }
+
     int totalMoves = 0;
     while (totalMoves < nbChoice) {
+        printf("Choosing 5 moves:\n");
         for (int i = 0; i < 5 && totalMoves < nbChoice; i++, totalMoves++) {
             int movementChosen = -1;
             for (int attempt = 0; attempt < NUM_MOVES; attempt++) {
@@ -195,31 +202,31 @@ void chooseMovements(Dispo *dispo, t_move choice[], int nbChoice, unsigned int s
 
             choice[totalMoves] = (t_move) movementChosen;
             dispo->disponibilities[movementChosen]--;
-            printf("Movement chosen: %s\n", getMoveAsString(choice[totalMoves]));
+            printf("%s ", getMoveAsString(choice[totalMoves]));
         }
         printf("\n");
 
         for (int i = totalMoves - 5; i < totalMoves; i++) {
             updateLocalisation(&loc, choice[i]);
-            printf("Movement applied: %s\n", getMoveAsString(choice[i]));
+
+            printf("\nMovement applied: %s\n", getMoveAsString(choice[i]));
             printf("Current position: (%d, %d)\n", loc.pos.x, loc.pos.y);
             printf("Current cost: %d\n", map.costs[loc.pos.y][loc.pos.x]);
             displayMapWithRover(map, loc);
-
-            if (map.costs[loc.pos.y][loc.pos.x] == 0) {
-                printf("Rover reached the base.\n");
+            if(map.soils[loc.pos.y][loc.pos.x] == CREVASSE) {
+                printf("Rover felt into the trou and KABOOOUUUUM !\n");
                 return;
             }
-        }
-        if (map.costs[loc.pos.y][loc.pos.x] != 0) {
-            printf("Rover did not reach the base after 5 moves. Removing 5 random moves.\n");
-            for (int i = 0; i < 5 && totalMoves > 0; i++, totalMoves--) {
-                int moveToRemove = rand() % totalMoves;
-                dispo->disponibilities[choice[moveToRemove]]++;
-                for (int j = moveToRemove; j < totalMoves - 1; j++) {
-                    choice[j] = choice[j + 1];
 
-                }
+            // Check if the rover's position is out of bounds
+            if (loc.pos.x < 0 || loc.pos.x > 5 || loc.pos.y < 0 || loc.pos.y > 6) {
+                printf("Rover went out of bounds. Stopping the program.\n");
+                return;
+            }
+
+            if (map.soils[loc.pos.y][loc.pos.x] == BASE_STATION) {
+                printf("Rover reached the base station.\n");
+                return;
             }
         }
     }
