@@ -162,7 +162,9 @@ void updateLocalisation(t_localisation *p_loc, t_move m)
 
 #define NUM_MOVES 7
 
+// Choose the movements of the rover and apply them
 void chooseMovements(Dispo *dispo, t_move choice[], int nbChoice, unsigned int seed, t_map map, t_localisation loc) {
+    // Initialize the random number generator
     srand(seed);
     printf("Movement disponibilities at the beginning:\n");
     for (int k = 0; k < NUM_MOVES; k++) {
@@ -173,16 +175,24 @@ void chooseMovements(Dispo *dispo, t_move choice[], int nbChoice, unsigned int s
     printf("Current position: (%d, %d)\n", loc.pos.x, loc.pos.y);
     printf("Current cost: %d\n", map.costs[loc.pos.y][loc.pos.x]);
     displayMapWithRover(map, loc);
+    //Test if the rover is on a crevasse
     if(map.soils[loc.pos.y][loc.pos.x] == CREVASSE) {
         printf("Rover felt into the trou and KABOOOUUUUM !\n");
         return;
     }
+    //Test if the rover is on the base station
+    if(map.soils[loc.pos.y][loc.pos.x] == BASE_STATION) {
+        printf("The rover came back to the base !!!\n");
+        return;
+    }
 
     int totalMoves = 0;
+    // Choose 5 moves
     while (totalMoves < nbChoice) {
         printf("Choosing 5 moves:\n");
         for (int i = 0; i < 5 && totalMoves < nbChoice; i++, totalMoves++) {
             int movementChosen = -1;
+            // Try to find a valid move
             for (int attempt = 0; attempt < NUM_MOVES; attempt++) {
                 int candidateMove = rand() % NUM_MOVES;
                 if (dispo->disponibilities[candidateMove] > 0) {
@@ -194,18 +204,18 @@ void chooseMovements(Dispo *dispo, t_move choice[], int nbChoice, unsigned int s
                     }
                 }
             }
-
+            // If no valid move was found, stop the program
             if (movementChosen == -1) {
                 printf("No valid moves available. Rover would go out of bounds.\n");
                 return;
             }
-
+            // Otherwise, apply the move
             choice[totalMoves] = (t_move) movementChosen;
             dispo->disponibilities[movementChosen]--;
             printf("%s ", getMoveAsString(choice[totalMoves]));
         }
         printf("\n");
-
+        // Display the map with the rover and the movement
         for (int i = totalMoves - 5; i < totalMoves; i++) {
             updateLocalisation(&loc, choice[i]);
 
@@ -213,6 +223,7 @@ void chooseMovements(Dispo *dispo, t_move choice[], int nbChoice, unsigned int s
             printf("Current position: (%d, %d)\n", loc.pos.x, loc.pos.y);
             printf("Current cost: %d\n", map.costs[loc.pos.y][loc.pos.x]);
             displayMapWithRover(map, loc);
+            //Test if the rover is on a crevasse
             if(map.soils[loc.pos.y][loc.pos.x] == CREVASSE) {
                 printf("Rover felt into the trou and KABOOOUUUUM !\n");
                 return;
@@ -223,17 +234,17 @@ void chooseMovements(Dispo *dispo, t_move choice[], int nbChoice, unsigned int s
                 printf("Rover went out of bounds. Stopping the program.\n");
                 return;
             }
-
+            //Test if the rover is on the base station
             if (map.soils[loc.pos.y][loc.pos.x] == BASE_STATION) {
                 printf("Rover reached the base station.\n");
                 return;
             }
         }
     }
-
     printf("Rover did not reach the base within the given moves.\n");
 }
 
+// Display the map with the rover
 void displayMapWithRover(t_map map, t_localisation loc) {
     for (int i = 0; i < map.y_max; i++) {
         for (int rep = 0; rep < 3; rep++) {

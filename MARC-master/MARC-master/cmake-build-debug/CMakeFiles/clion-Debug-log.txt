@@ -5,6 +5,6 @@
 -- Check for working C compiler: C:/Program Files/JetBrains/CLion 2023.3.2/bin/mingw/bin/gcc.exe - skipped
 -- Detecting C compile features
 -- Detecting C compile features - done
--- Configuring done (1.4s)
+-- Configuring done (2.0s)
 -- Generating done (0.0s)
 -- Build files have been written to: C:/Users/marin/CLionProjects/MARC_The_Rover_MNM/MARC-master/MARC-master/cmake-build-debug

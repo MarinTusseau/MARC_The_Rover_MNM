@@ -15,6 +15,8 @@ int main() {
 #endif
 
     int choix = 999;
+
+    // Main menu
     while (choix != 0) {
         printf("\n-------- MENU --------\n\n");
         printf("1. Afficher la map topographique\n");
@@ -29,6 +31,7 @@ int main() {
         scanf("%d", &choix);
         printf("\n");
 
+        // Switch case for the menu
         switch (choix) {
             case 1:
                 displayMap(map);
@@ -47,7 +50,11 @@ int main() {
                 t_move choice[9];
                 Dispo dispoNow = initDispo;
                 t_localisation loc = loc_init(xInit, yInit, NORTH);
-                chooseMovements(&dispoNow, choice, movementPerPhase, time(NULL), map, loc);
+                int totalMoves = 0;
+                while (totalMoves < 9) {
+                    chooseMovements(&dispoNow, choice + totalMoves, movementPerPhase, time(NULL), map, loc);
+                    totalMoves += movementPerPhase;
+                }
                 break;
             case 3:
                 printf("! Chaque noeud aura ses fils sur sa droite et sur un meme niveau !\n! Chaque espace correspond a un niveau (ou couche) de l'arbre !\n");
