@@ -1,16 +1,15 @@
-//
-// Created by flasque on 19/10/2024.
-//
-
 #ifndef UNTITLED1_MOVES_H
 #define UNTITLED1_MOVES_H
 
 #include "loc.h"
+#include <time.h>
+#include <stdlib.h>
+#include "map.h"
 
 /**
  * @brief Array of strings for the possible moves of the robot
  */
-static char _moves[8][8] = {"F 10m", "F 20m", "F 30m", "B 10m", "T left", "T right", "U-turn"};
+static char _moves[8][8] = {"F 10m", "F 20m", "F 30m", "B 10m", "T left", "T right", "U turn"};
 
 /**
  * @brief Enum for the possible moves of the robot
@@ -18,12 +17,12 @@ static char _moves[8][8] = {"F 10m", "F 20m", "F 30m", "B 10m", "T left", "T rig
 
 typedef enum e_move
 {
-    F_10, // Forward 10 m
-    F_20, // Forward 20 m
-    F_30, // Forward 30 m
-    B_10, // Backward 10 m
-    T_LEFT, // Turn left (+90°)
-    T_RIGHT, // Turn right (-90°)
+    F_10,
+    F_20,
+    F_30,
+    B_10,
+    T_LEFT,
+    T_RIGHT,
     U_TURN
 } t_move;
 
@@ -49,5 +48,13 @@ t_localisation move(t_localisation, t_move);
  * @return none
  */
 void updateLocalisation(t_localisation *, t_move);
+
+typedef struct {
+    int disponibilities[7];
+} Dispo;
+
+void chooseMovements(Dispo *, t_move[], int, unsigned int, t_map, t_localisation);
+
+void displayMapWithRover(t_map, t_localisation);
 
 #endif //UNTITLED1_MOVES_H
